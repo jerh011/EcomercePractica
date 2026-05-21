@@ -34,3 +34,15 @@ $ pnpm nx serve api
 ```bash
 $ pnpm nx serve admin-web
 ```
+
+pnpm add -w @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
+
+pnpm add -w tailwindcss @tailwindcss/postcss autoprefixer
+
+pnpm nx g @nx/angular:setup-tailwind --project=admin-web
+
+Remove-Item apps/admin-web/postcss.config.cjs
+
+Set-Content apps/admin-web/.postcssrc.json '{"plugins": {"@tailwindcss/postcss": {}}}'
+
+pnpm add -w tailwind-merge

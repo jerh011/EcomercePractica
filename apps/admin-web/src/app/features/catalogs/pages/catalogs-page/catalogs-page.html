@@ -1,0 +1,13 @@
+<ecom-page-layout>
+  <header ecom-page-header title="Catálogos" description="XXXXXX">
+  </header>
+  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    @for (item of options; track $index) {
+      <ecom-catalog-link-card
+        [label]="item.label"
+        [href]="item.href"
+        [icon]="item.icon"
+      ></ecom-catalog-link-card>
+    }
+  </main>
+</ecom-page-layout>

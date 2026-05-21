@@ -3,11 +3,19 @@
   "compilerOptions": {
     "emitDeclarationOnly": false,
     "composite": false,
+    "noUnusedLocals": false,
     "module": "preserve",
     "moduleResolution": "bundler",
     "lib": ["dom", "dom.iterable", "esnext"],
     "noPropertyAccessFromIndexSignature": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": {
+      "@core/*": ["./src/app/core/*"],
+      "@catalogs/*": ["./src/app/features/catalogs/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@categories/*": ["./src/app/features/categories/*"],
+      "@environments/*": ["./src/environments/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
