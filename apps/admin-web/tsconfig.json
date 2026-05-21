@@ -10,11 +10,11 @@
     "noPropertyAccessFromIndexSignature": true,
     "experimentalDecorators": true,
     "paths": {
-      "@core/*": ["./src/app/core/*"],
-      "@catalogs/*": ["./src/app/features/catalogs/*"],
-      "@shared/*": ["./src/app/shared/*"],
-      "@categories/*": ["./src/app/features/categories/*"],
-      "@environments/*": ["./src/environments/*"]
+      "@shared/*": ["./apps/admin-web/src/app/shared/*"],
+      "@core/*": ["./apps/admin-web/src/app/core/*"],
+      "@environments/*": ["./apps/admin-web/src/environments/*"],
+      "@catalogs/*": ["./apps/admin-web/src/app/features/catalogs/*"],
+      "@categories/*": ["./apps/admin-web/src/app/features/categories/*"]
     }
   },
   "angularCompilerOptions": {

@@ -16,6 +16,14 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@org/source"]
+    "customConditions": ["@org/source"],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["apps/admin-web/src/app/shared/*"],
+      "@core/*": ["apps/admin-web/src/app/core/*"],
+      "@environments/*": ["apps/admin-web/src/environments/*"],
+      "@catalogs/*": ["apps/admin-web/src/app/features/catalogs/*"],
+      "@categories/*": ["apps/admin-web/src/app/features/categories/*"]
+    }
   }
 }
