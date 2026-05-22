@@ -1,5 +1,12 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipDefaultLibCheck": true,
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
@@ -19,11 +26,17 @@
     "customConditions": ["@org/source"],
     "baseUrl": ".",
     "paths": {
+      "@ecomercepractica/shared/contracts/*": ["libs/shared/contracts/*"],
+      "@ecomercepractica/db": ["libs/db/src/index.ts"],
+      "@ecomercepractica/shared/*": ["libs/shared/*"],
       "@shared/*": ["apps/admin-web/src/app/shared/*"],
       "@core/*": ["apps/admin-web/src/app/core/*"],
       "@environments/*": ["apps/admin-web/src/environments/*"],
       "@catalogs/*": ["apps/admin-web/src/app/features/catalogs/*"],
-      "@categories/*": ["apps/admin-web/src/app/features/categories/*"]
+      "@categories/*": ["apps/admin-web/src/app/features/categories/*"],
+      "@org/shared-ui": ["./libs/shared-ui/src/index.ts"],
+      "@org/db": ["./libs/db/src/index.ts"]
     }
-  }
+  },
+  "exclude": ["node_modules", "tmp"]
 }

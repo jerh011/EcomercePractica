@@ -1,3 +1,9 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+  - 'libs/*'
+  - 'libs/shared/*'
+allowBuilds:
+  '@prisma/client': false
+  '@prisma/engines': false
+  prisma: false

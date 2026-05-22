@@ -11,6 +11,21 @@
     },
     {
       "path": "./apps/admin-web-e2e"
+    },
+    {
+      "path": "./libs/shared"
+    },
+    {
+      "path": "./libs/db"
+    },
+    {
+      "path": "./libs/db"
+    },
+    {
+      "path": "./libs/db"
+    },
+    {
+      "path": "./libs/shared/contracts"
     }
   ]
 }
