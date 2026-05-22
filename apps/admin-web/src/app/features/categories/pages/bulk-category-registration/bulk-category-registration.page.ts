@@ -22,9 +22,9 @@ import { Location } from '@angular/common';
 @Component({
     selector: 'ecom-bulk-category-registration.page',
     imports: [PageLayout, PageHeader, 
-        // CategoryForm,
+        CategoryForm,
          Card, 
-        //  CategoriesTable, 
+         CategoriesTable, 
          Button],
     templateUrl: './bulk-category-registration.page.html',
     styleUrl: './bulk-category-registration.page.css',
@@ -143,24 +143,24 @@ export class BulkCategoryRegistrationPage implements OnInit {
     }
 
     onCancel(): void {
-        // if (this.categories().length === 0) {
-        //     return this.goBack();
-        // }
-        // this.dialogService.openConfirm(
-        //     {
-        //         message: '¿Estás seguro que deseas cancelar? Se perderán los cambios no guardados.',
-        //         confirmText: 'Sí, cancelar',
-        //         confirmVariant: 'danger',
-        //         cancelText: 'No, continuar editando',
-        //     },
-        //     {
-        //         title: 'Confirmar cancelación',
-        //     },
-        // ).onClose$.subscribe((confirmed) => {
-        //     if (confirmed) {
-        //         this.goBack();
-        //     }
-        // });
+        if (this.categories().length === 0) {
+            return this.goBack();
+        }
+        this.dialogService.openConfirm(
+            {
+                message: '¿Estás seguro que deseas cancelar? Se perderán los cambios no guardados.',
+                confirmText: 'Sí, cancelar',
+                confirmVariant: 'danger',
+                cancelText: 'No, continuar editando',
+            },
+            {
+                title: 'Confirmar cancelación',
+            },
+        ).onClose$.subscribe((confirmed) => {
+            if (confirmed) {
+                this.goBack();
+            }
+        });
     }
 
     private goBack() {

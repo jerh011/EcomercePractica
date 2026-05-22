@@ -3,9 +3,9 @@ import { CategoriesService } from './categories.service';
 import { createPagination, EntityData, EntityRecord, PersistedRecord } from '@shared/interfaces';
 import { PageLayout } from '@shared/component/page-layout/page-layout';
 import { PageHeader } from '@shared/component/page-header/page-header';
-// import { CategoryOverviewActions } from '@categories/components/category-overview-actions/category-overview-actions';
+import { CategoryOverviewActions } from '@categories/components/category-overview-actions/category-overview-actions';
 import { RegisterCategoryStrategy } from '@categories/components/category-overview-actions/types';
-// import { CategoriesTable } from '@categories/components/categories-table/categories-table';
+import { CategoriesTable } from '@categories/components/categories-table/categories-table';
 import { Category } from '@shared/models';
 import { toPersistedRecord } from '@shared/mappers/entity-record.mapper';
 import { CategoriesTableService } from '../../components/categories-table/categories-table.service';
@@ -25,7 +25,7 @@ import { CategoryDetailsDialog } from '@categories/components/dialogs/category-d
 @Component({
     selector: 'ecom-categories.page',
     imports: [PageLayout, PageHeader,
-        //  CategoryOverviewActions, CategoriesTable
+         CategoryOverviewActions, CategoriesTable
         ],
     templateUrl: './categories.page.html',
     styleUrl: './categories.page.css',

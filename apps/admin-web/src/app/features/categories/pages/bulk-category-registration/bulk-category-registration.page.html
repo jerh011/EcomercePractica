@@ -8,8 +8,8 @@
     </article>
     <main class="flex flex-col gap-4">
         <ecom-card>
-            <!-- <ecom-category-form [actions]="formActions" (submitted)="onSubmit($event)" /> -->
+            <ecom-category-form [actions]="formActions" (submitted)="onSubmit($event)" />
         </ecom-card>
-        <!-- <ecom-categories-table [data]="categories()" [columns]="columns" [pagination]="pagination" [actions]="categoryTableActions" /> -->
+        <ecom-categories-table [data]="categories()" [columns]="columns" [pagination]="pagination" [actions]="categoryTableActions" />
     </main>
 </ecom-page-layout>

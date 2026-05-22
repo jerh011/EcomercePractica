@@ -14,7 +14,8 @@
       "@core/*": ["./apps/admin-web/src/app/core/*"],
       "@environments/*": ["./apps/admin-web/src/environments/*"],
       "@catalogs/*": ["./apps/admin-web/src/app/features/catalogs/*"],
-      "@categories/*": ["./apps/admin-web/src/app/features/categories/*"]
+      "@categories/*": ["./apps/admin-web/src/app/features/categories/*"],
+      "@env/*": ["./apps/admin-web/src/environments/*"]
     }
   },
   "angularCompilerOptions": {
