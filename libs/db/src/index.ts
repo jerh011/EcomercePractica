@@ -31,15 +31,15 @@ if (envFile) {
 
 const rawConnectionString =
   process.env['NODE_ENV'] === 'production'
-    ? process.env['DB_URL']
-    : process.env['LOCAL_DB_URL'];
+    ? process.env['DATABASE_URL']
+    : process.env['DATABASE_URL'];
 const connectionString = rawConnectionString
   ? expandEnvValue(rawConnectionString)
   : undefined;
 
 if (!connectionString) {
   throw new Error(
-    'Database connection string is missing. Set LOCAL_DB_URL for development or DB_URL for production.',
+    'Database connection string is missing. Set DB_URLcl} for development or DB_URL for production.',
   );
 }
 
