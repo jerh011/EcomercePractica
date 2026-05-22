@@ -1,0 +1,22 @@
+model InventoryMovement {
+  id                String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  variantId         String                @map("variant_id") @db.Uuid
+  sourceRackId      String?               @map("source_rack_id") @db.Uuid
+  destinationRackId String?               @map("destination_rack_id") @db.Uuid
+//   movementType      InventoryMovementType @map("movement_type")
+  quantity          Int
+  reason            String                @db.VarChar(120)
+  comments          String?               @db.Text
+  performedByUserId String?               @map("performed_by_user_id")
+  createdAt         DateTime              @default(now()) @map("created_at") @db.Timestamptz
+  variant           Variant               @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  sourceRack        Rack?                 @relation("InventoryMovementSourceRack", fields: [sourceRackId], references: [id], onDelete: SetNull)
+  destinationRack   Rack?                 @relation("InventoryMovementDestinationRack", fields: [destinationRackId], references: [id], onDelete: SetNull)
+//   performedByUser   User?                 @relation("InventoryMovementPerformedBy", fields: [performedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([variantId, createdAt])
+  @@index([sourceRackId])
+  @@index([destinationRackId])
+  @@index([performedByUserId])
+  @@map("inventory_movements")
+}

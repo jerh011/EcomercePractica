@@ -1,0 +1,9 @@
+model PaymentStatus {
+  id        Int       @id
+  name      String
+  payments  Payment[]
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("payment_statuses")
+}

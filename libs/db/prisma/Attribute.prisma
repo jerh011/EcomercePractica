@@ -1,0 +1,22 @@
+model Attribute {
+  id            String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  slug          String
+  description   String?
+  displayOrder  Int                 @default(0) @map("display_order")
+  isActive      Boolean             @default(true) @map("is_active")
+  isFilterable  Boolean             @default(false) @map("is_filterable")
+  isRequired    Boolean             @default(false) @map("is_required")
+  appliesToAll  Boolean             @default(false) @map("applies_to_all")
+  version       Int                 @default(1)
+  deletedAt     DateTime?           @map("deleted_at") @db.Timestamptz
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+  categoryLinks CategoryAttribute[]
+  productLinks  ProductAttribute[]
+  variantLinks  VariantAttribute[]
+  variantValues VariantAttributeValue[]
+
+  @@index([displayOrder])
+  @@map("attributes")
+}

@@ -1,0 +1,43 @@
+model StoreSettings {
+  id                   String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  settingsKey          String              @unique @default("default") @map("settings_key")
+  commercialName       String?             @map("commercial_name")
+  legalName            String?             @map("legal_name")
+  shortDescription     String?             @map("short_description")
+  longDescription      String?             @map("long_description")
+  primaryLogoUrl       String?             @map("primary_logo_url")
+  alternateLogoUrl     String?             @map("alternate_logo_url")
+  primaryColorHex      String?             @map("primary_color_hex")
+  secondaryColorHex    String?             @map("secondary_color_hex")
+  accentColorHex       String?             @map("accent_color_hex")
+  contactEmail         String?             @map("contact_email")
+  phoneCountryCode     String?             @map("phone_country_code")
+  phoneNumber          String?             @map("phone_number")
+  whatsappCountryCode  String?             @map("whatsapp_country_code")
+  whatsappNumber       String?             @map("whatsapp_number")
+  fiscalStateId        String?             @map("fiscal_state_id") @db.Uuid
+  fiscalMunicipalityId String?             @map("fiscal_municipality_id") @db.Uuid
+  settlement           String?
+  postalCode           String?             @map("postal_code")
+  street               String?
+  streetNumber         String?             @map("street_number")
+  addressReferences    String?             @map("address_references")
+  taxId                String?             @map("tax_id")
+  taxRegimeCode        String?             @map("tax_regime_code")
+  taxStateId           String?             @map("tax_state_id") @db.Uuid
+  taxMunicipalityId    String?             @map("tax_municipality_id") @db.Uuid
+  taxSettlement        String?             @map("tax_settlement")
+  taxPostalCode        String?             @map("tax_postal_code")
+  taxStreet            String?             @map("tax_street")
+  taxStreetNumber      String?             @map("tax_street_number")
+  taxAddressReferences String?             @map("tax_address_references")
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+  contactState         MexicoState?        @relation("StoreSettingsContactState", fields: [fiscalStateId], references: [id])
+  contactMunicipality  MexicoMunicipality? @relation("StoreSettingsContactMunicipality", fields: [fiscalMunicipalityId], references: [id])
+  taxRegime            TaxRegime?          @relation(fields: [taxRegimeCode], references: [code])
+  taxState             MexicoState?        @relation("StoreSettingsTaxState", fields: [taxStateId], references: [id])
+  taxMunicipality      MexicoMunicipality? @relation("StoreSettingsTaxMunicipality", fields: [taxMunicipalityId], references: [id])
+
+  @@map("store_settings")
+}

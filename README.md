@@ -112,3 +112,22 @@ pnpm add -w @nestjs/config helmet @scalar/nestjs-api-reference cookie-parser @ty
 
 pnpm nx serve api verificar datos 
 pnpm nx serve admin-web
+pnpm prisma generate --schema=libs/db/prisma/schema.prisma
+
+pnpm add redis -w
+
+pnpm add -D @types/express --filter admin-web
+pnpm add -D @types/express -w
+
+pnpm install --force
+
+
+## generar prisma
+pnpm prisma db pull --schema=libs/db/prisma/schema.prisma
+
+pnpm add @prisma/adapter-pg -w
+
+## verificar conexion
+pnpm prisma db pull --schema=libs/db/prisma/schema.prisma --config=libs/db/prisma.config.ts
+
+New-Item libs/db/prisma/"nombre".prisma

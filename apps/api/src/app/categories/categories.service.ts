@@ -19,7 +19,7 @@ import {
   toCategoryDto,
   toCategoryWithChildrenDto,
 } from './mappers/categories.mapper';
-
+import { CreateCategoryDto } from '@ecomercepractica/shared/contracts/categories/input/create-category.dto';
 const DEFAULT_PAGE_SIZE = 25;
 const CATEGORY_RESPONSE_INCLUDE = {
   parent: { select: { id: true, name: true, slug: true } },

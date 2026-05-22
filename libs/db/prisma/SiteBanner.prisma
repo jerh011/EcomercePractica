@@ -1,0 +1,47 @@
+model SiteBanner {
+  id               String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  section          SiteBannerSection
+  imageUrl         String                    @map("image_url")
+  imageFormat      SiteBannerImageFormat?    @map("image_format")
+  title            String?                   @db.VarChar(40)
+  description      String?                   @db.VarChar(80)
+  isActive         Boolean                   @default(true) @map("is_active")
+  eventType        SiteBannerEventType       @default(NONE) @map("event_type")
+  buttonText       String?                   @map("button_text") @db.VarChar(10)
+  buttonUrl        String?                   @map("button_url") @db.VarChar(300)
+  contentPosition  SiteBannerContentPosition? @default(LEFT) @map("content_position")
+  categoryId       String?                   @map("category_id") @db.Uuid
+  validUntil       DateTime?                 @map("valid_until") @db.Timestamptz
+  deletedAt        DateTime?                 @map("deleted_at") @db.Timestamptz
+  createdAt        DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime                  @default(now()) @map("updated_at") @db.Timestamptz
+  category         Category?                 @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([section, isActive])
+  @@index([categoryId])
+  @@index([validUntil])
+  @@map("site_banners")
+}
+
+
+enum SiteBannerSection {
+  HERO
+  SECONDARY
+}
+
+enum SiteBannerEventType {
+  NONE
+  BUTTON
+}
+
+enum SiteBannerContentPosition {
+  LEFT
+  RIGHT
+  CENTER
+}
+
+enum SiteBannerImageFormat {
+  HORIZONTAL
+  SQUARE
+  VERTICAL
+}

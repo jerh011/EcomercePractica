@@ -1,0 +1,9 @@
+model ShippingProvider {
+  id        Int        @id
+  name      String
+  shipments Shipment[]
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime   @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("shipping_providers")
+}

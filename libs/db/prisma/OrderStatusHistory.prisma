@@ -1,0 +1,21 @@
+model OrderStatusHistory {
+  id              String      @id @default(uuid(7))
+  orderId         String      @map("order_id") @db.Uuid
+  fromStatusId    Int         @map("from_status_id")
+  toStatusId      Int         @map("to_status_id")
+  comment         String      @db.Text
+  changedByUserId String?     @map("changed_by_user_id")
+  changedAt       DateTime    @default(now()) @map("changed_at") @db.Timestamptz
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus      OrderStatus @relation("OrderStatusHistoryFrom", fields: [fromStatusId], references: [id], onDelete: Restrict)
+  toStatus        OrderStatus @relation("OrderStatusHistoryTo", fields: [toStatusId], references: [id], onDelete: Restrict)
+  // changedByUser   User?       @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([orderId, changedAt])
+  @@index([fromStatusId])
+  @@index([toStatusId])
+  @@index([changedByUserId])
+  @@map("order_status_history")
+}

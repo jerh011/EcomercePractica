@@ -1,0 +1,12 @@
+model OrderStatus {
+  id        Int      @id
+  name      String
+  slug      String   @unique
+  orders    Order[]
+  fromHistory OrderStatusHistory[] @relation("OrderStatusHistoryFrom")
+  toHistory   OrderStatusHistory[] @relation("OrderStatusHistoryTo")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("order_statuses")
+}

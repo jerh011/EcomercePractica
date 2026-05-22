@@ -1,0 +1,18 @@
+model Rack {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  warehouseId String    @map("warehouse_id") @db.Uuid
+  code        String    @db.VarChar(50)
+  description String?   @db.VarChar(255)
+  isActive    Boolean   @default(true) @map("is_active")
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  inventoryAllocations InventoryAllocation[]
+  sourceInventoryMovements InventoryMovement[] @relation("InventoryMovementSourceRack")
+  destinationInventoryMovements InventoryMovement[] @relation("InventoryMovementDestinationRack")
+
+  @@index([warehouseId])
+  @@unique([warehouseId, code])
+  @@map("racks")
+}

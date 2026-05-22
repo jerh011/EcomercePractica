@@ -1,0 +1,17 @@
+model OrderItem {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId             String   @map("order_id") @db.Uuid
+  variantId           String   @map("variant_id") @db.Uuid
+  quantity            Int
+  unitPrice           Decimal  @map("unit_price") @db.Decimal(12, 2)
+  productNameSnapshot String   @map("product_name_snapshot")
+  skuSnapshot         String   @map("sku_snapshot")
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant             Variant  @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index([orderId])
+  @@index([variantId])
+  @@map("order_items")
+}

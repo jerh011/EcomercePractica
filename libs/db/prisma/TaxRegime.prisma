@@ -1,0 +1,10 @@
+model TaxRegime {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code       String          @unique
+  name       String
+  personType String?         @map("person_type")
+  sortOrder  Int             @default(0) @map("sort_order")
+  stores     StoreSettings[]
+
+  @@map("tax_regimes")
+}

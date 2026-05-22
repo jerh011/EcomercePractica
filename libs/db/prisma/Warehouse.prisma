@@ -1,0 +1,25 @@
+model Warehouse {
+  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String             @db.VarChar(150)
+  code           String             @db.VarChar(50)
+  direction      String             @db.VarChar(255)
+  stateId        String             @map("state_id") @db.Uuid
+  municipalityId String             @map("municipality_id") @db.Uuid
+  postalCode     String             @map("postal_code") @db.VarChar(10)
+  neighborhood   String             @db.VarChar(150)
+  street         String             @db.VarChar(150)
+  streetNumber   String             @map("street_number") @db.VarChar(50)
+  reference      String?            @db.VarChar(255)
+  isActive       Boolean            @default(true) @map("is_active")
+  deletedAt      DateTime?          @map("deleted_at") @db.Timestamptz
+  createdAt      DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime           @default(now()) @map("updated_at") @db.Timestamptz
+  state          MexicoState        @relation("WarehouseState", fields: [stateId], references: [id])
+  municipality   MexicoMunicipality @relation("WarehouseMunicipality", fields: [municipalityId], references: [id])
+  racks          Rack[]
+
+  @@index([stateId])
+  @@index([municipalityId])
+  @@index([code])
+  @@map("warehouses")
+}

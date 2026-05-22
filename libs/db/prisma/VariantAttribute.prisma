@@ -1,0 +1,12 @@
+model VariantAttribute {
+  variantId   String    @map("variant_id") @db.Uuid
+  attributeId String    @map("attribute_id") @db.Uuid
+  variant     Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@id([variantId, attributeId])
+  @@index([attributeId])
+  @@map("variant_attributes")
+}

@@ -1,0 +1,20 @@
+model Order {
+  id                      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                  String       @map("user_id")
+  statusId                Int          @map("status_id")
+  totalAmount             Decimal      @map("total_amount") @db.Decimal(12, 2)
+  shippingCost            Decimal      @default(0) @map("shipping_cost") @db.Decimal(12, 2)
+  shippingAddressSnapshot Json         @map("shipping_address_snapshot")
+//   user                    User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  status                  OrderStatus  @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  items                   OrderItem[]
+  shipment                Shipment?
+  payment                 Payment?
+  statusHistory           OrderStatusHistory[]
+  createdAt               DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt               DateTime     @default(now()) @map("updated_at") @db.Timestamptz
+
+//   @@index([userId])
+  @@index([statusId])
+  @@map("orders")
+}

@@ -1,0 +1,11 @@
+model MexicoState {
+  id                   String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                 String               @unique
+  name                 String
+  municipalities       MexicoMunicipality[]
+  contactStoreSettings StoreSettings[]      @relation("StoreSettingsContactState")
+  taxStoreSettings     StoreSettings[]      @relation("StoreSettingsTaxState")
+  warehouses           Warehouse[]          @relation("WarehouseState")
+
+  @@map("mexico_states")
+}

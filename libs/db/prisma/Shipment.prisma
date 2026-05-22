@@ -1,0 +1,17 @@
+model Shipment {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId        String           @unique @map("order_id") @db.Uuid
+  providerId     Int              @map("provider_id")
+  statusId       Int              @map("status_id")
+  trackingNumber String?          @map("tracking_number")
+  shippedAt      DateTime?        @map("shipped_at") @db.Timestamptz
+  order          Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider       ShippingProvider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  status         ShipmentStatus   @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime         @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index([providerId])
+  @@index([statusId])
+  @@map("shipments")
+}

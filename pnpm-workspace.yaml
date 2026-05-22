@@ -4,6 +4,16 @@ packages:
   - 'libs/*'
   - 'libs/shared/*'
 allowBuilds:
+  '@nestjs/core': false
+  '@parcel/watcher': false
   '@prisma/client': false
   '@prisma/engines': false
+  '@scarf/scarf': false
+  '@swc/core': false
+  esbuild: false
+  less: false
+  lmdb: false
+  msgpackr-extract: false
+  nx: false
   prisma: false
+  unrs-resolver: false
