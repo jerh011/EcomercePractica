@@ -9,6 +9,19 @@ module.exports = {
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     }),
   },
+  resolve: {
+    alias: {
+      '@ecomercepractica/db': join(__dirname, '../../libs/db/src/index.ts'),
+      '@ecomercepractica/shared/validations': join(
+        __dirname,
+        '../../libs/shared/validations/index.ts',
+      ),
+      '@ecomercepractica/shared/contracts': join(
+        __dirname,
+        '../../libs/shared/contracts',
+      ),
+    },
+  },
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',

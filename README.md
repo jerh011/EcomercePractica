@@ -130,4 +130,15 @@ pnpm add @prisma/adapter-pg -w
 ## verificar conexion
 pnpm prisma db pull --schema=libs/db/prisma/schema.prisma --config=libs/db/prisma.config.ts
 
-New-Item libs/db/prisma/"nombre".prisma
+New-Item libs/db/prisma/"nombre".
+
+
+
+
+
+
+
+
+
+
+pnpm prisma generate --config=libs/db/prisma.config.ts

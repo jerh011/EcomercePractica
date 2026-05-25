@@ -34,8 +34,15 @@
       "@environments/*": ["apps/admin-web/src/environments/*"],
       "@catalogs/*": ["apps/admin-web/src/app/features/catalogs/*"],
       "@categories/*": ["apps/admin-web/src/app/features/categories/*"],
-      "@org/shared-ui": ["./libs/shared-ui/src/index.ts"],
-      "@org/db": ["./libs/db/src/index.ts"]
+      "@ecomercepractica/shared/contracts": [
+        "libs/shared/contracts/src/index.ts"
+      ],
+      "@ecomercepractica/shared/validations": [
+        "libs/shared/validations/index.ts"
+      ],
+      "@ecomercepractica/shared/validations/*": ["libs/shared/validations/*"]
+      // "@org/shared-ui": ["./libs/shared-ui/src/index.ts"],
+      // "@org/db": ["./libs/db/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '@environments/environtment.development';
+import { environment } from '@env/environtment.development';
 import { OffsetPaginationParams } from '@shared/interfaces';
 import { Observable } from 'rxjs';
 import { CategoriesCompositeResponse, CategoriesOffsetResponse } from './types';
