@@ -16,7 +16,7 @@ export type BulkSaveCategoryItem = SaveCategoryRequest & {
     key: string;
 };
 
-export type GetCategoryByIdResponse = ApiResponse<Category>;
+export type GetCategoryByIdResponse = Category;
 
 export type CategorySavedResponse = ApiResponse<Category>;
 export type CategoryBatchSavedResponse = BatchResponse;

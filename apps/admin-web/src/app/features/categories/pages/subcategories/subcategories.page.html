@@ -7,9 +7,9 @@
         </article>
     </section>
     <main class="flex flex-col gap-4">
-      <!-- <ecom-parent-category-summary-card [category]="parentCategory()"></ecom-parent-category-summary-card> -->
+      <ecom-parent-category-summary-card [category]="parentCategory()"></ecom-parent-category-summary-card>
         <ecom-card>
-            <!-- <ecom-category-form (submitted)="onSubmitCategory($event)" [actions]="formActions"></ecom-category-form> -->
+            <ecom-category-form (submitted)="onSubmitCategory($event)" [actions]="formActions"></ecom-category-form>
         </ecom-card>
         @if (syncErrors().length > 0) {
             <section class="rounded-lg border border-destructive bg-destructive-background p-4 text-destructive shadow-sm shadow-destructive/10" aria-live="polite">
@@ -30,6 +30,6 @@
                 </ul>
             </section>
         }
-        <!-- <ecom-categories-table [data]="rows()" [pagination]="paginationOptions" [actions]="categoryTableActions"></ecom-categories-table> -->
+        <ecom-categories-table [data]="rows()" [pagination]="paginationOptions" [actions]="categoryTableActions"></ecom-categories-table>
     </main>
 </ecom-page-layout>

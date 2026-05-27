@@ -2,18 +2,18 @@
     @if (!isLoading() && category(); as category) {
         <main class="flex flex-col gap-2 overflow-y-auto">
             <section class="flex items-center gap-4">
-                <!-- <ecom-badge size="xl">{{ activeLabel() }}</ecom-badge>
-                <ecom-badge variant="secondary" size="xl">{{ visibleInMenuLabel() }}</ecom-badge> -->
+                <ecom-badge size="xl">{{ activeLabel() }}</ecom-badge>
+                <ecom-badge variant="secondary" size="xl">{{ visibleInMenuLabel() }}</ecom-badge>
             </section>
             <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <ecom-label class="col-span-2" label="Imagen">
                     <div class="flex items-center justify-center">
-                        <!-- <ecom-image
+                        <ecom-image
                             size="2xl"
                             class="rounded-lg border"
                             [src]="imageUrl()"
                             [alt]="imageAlt()"
-                        /> -->
+                        />
                     </div>
                 </ecom-label>
                 <ecom-label label="Nombre">

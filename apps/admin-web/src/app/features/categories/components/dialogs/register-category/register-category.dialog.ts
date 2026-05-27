@@ -2,8 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { IDialogComponent } from '@shared/component/ui/dialog/interfaces/dialog-component.interface';
 import { DialogRef } from '@shared/component/ui/dialog/models/dialog-ref.model';
 import { Category } from '@shared/models';
-//TODO: Importar el formulario de categoría cuando esté listo
-// import { CategoryForm } from "@categories/components/forms/category-form/category-form";
+import { CategoryForm } from "@categories/components/forms/category-form/category-form";
 import { CategoryFormData } from '@categories/components/forms/category-form/types';
 import { CategoryService } from '@categories/services/category/category.service';
 import { SaveCategoryRequest } from '@categories/services/category/types';
@@ -11,9 +10,7 @@ import { FormActionsOptions, FormEvent } from '@shared/interfaces';
 
 @Component({
     selector: 'ecom-register-category.dialog',
-    imports: [
-        // CategoryForm
-    ],
+    imports: [CategoryForm],
     templateUrl: './register-category.dialog.html',
     styleUrl: './register-category.dialog.css',
     providers: [CategoryService],

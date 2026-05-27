@@ -2,14 +2,14 @@ import {
   Component,
   computed,
   inject,
-  input,
-  OnInit,
   signal,
+  OnInit,
+  OnDestroy,
 } from '@angular/core';
-import { PageLayout } from '@shared/component/page-layout/page-layout';
 import { PageHeader } from '@shared/component/page-header/page-header';
 import { Card } from '@shared/component/ui/card/card';
 import { Button } from '@shared/component/ui/button/button';
+import { PageLayout } from '@shared/component/page-layout/page-layout';
 import { SubcategoriesService } from './services/subcategories.service';
 import {
   SyncCategoryChildrenResponse,
@@ -39,26 +39,28 @@ import { SubcategoriesStateService } from './services/subcategories-state.servic
 import { ToastService } from '@shared/services/toast/toast.service';
 import { Location } from '@angular/common';
 import { DialogService } from '@shared/services/toast/dialog/dialog.service';
-import { ParentCategorySummaryCard } from "@categories/components/parent-category-summary-card/parent-category-summary-card";
+import { ParentCategorySummaryCard } from '@categories/components/parent-category-summary-card/parent-category-summary-card';
 import { CategorySummary } from '@categories/components/parent-category-summary-card/types';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 type SubcategorySyncError = {
   categoryName: string;
   operation: 'Crear' | 'Actualizar' | 'Eliminar';
   reason: string;
 };
-//TODO: Remove unused imports when the template is updated to use these components
+
 @Component({
   selector: 'ecom-subcategories.page',
   imports: [
     PageLayout,
-    // CategoriesTable,
+    CategoriesTable,
     Card,
-    // CategoryForm,
+    CategoryForm,
     Button,
     PageHeader,
-    // ParentCategorySummaryCard
-],
+    ParentCategorySummaryCard,
+  ],
   templateUrl: './subcategories.page.html',
   styleUrl: './subcategories.page.css',
   providers: [
@@ -67,7 +69,7 @@ type SubcategorySyncError = {
     SubcategoriesStateService,
   ],
 })
-export class SubcategoriesPage implements OnInit {
+export class SubcategoriesPage implements OnInit, OnDestroy {
   private readonly subcategoriesService: SubcategoriesService =
     inject(SubcategoriesService);
   private readonly categoriesTableService: CategoriesTableService = inject(
@@ -79,11 +81,14 @@ export class SubcategoriesPage implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly location = inject(Location);
   private readonly dialogService = inject(DialogService);
+  private readonly route = inject(ActivatedRoute);
 
   parentCategory = signal<CategorySummary | null>(null);
-  id = input.required<string>();
+  private categoryId = signal<string | null>(null);
   isLoadingComposite = signal<boolean>(true);
   syncErrors = signal<SubcategorySyncError[]>([]);
+
+  private routeSubscription?: Subscription;
 
   readonly paginationOptions = createPagination({ showPagination: false });
   readonly categoryTableActions: CategoriesActionsOptions = {
@@ -105,27 +110,50 @@ export class SubcategoriesPage implements OnInit {
   readonly hasPendingChanges = this.state.hasPendingChanges;
 
   ngOnInit(): void {
-    this.loadComposite();
+    this.routeSubscription = this.route.params.subscribe((params) => {
+      const id = params['id'];
+      if (id) {
+        this.categoryId.set(id);
+        this.loadComposite(id);
+      }
+    });
     this.subscribeToTableEvents();
   }
 
-  private loadComposite(): void {
+  ngOnDestroy(): void {
+    this.routeSubscription?.unsubscribe();
+  }
+
+  // subcategories.page.ts
+  private loadComposite(id: string): void {
     this.isLoadingComposite.set(true);
-    this.subcategoriesService.getSubcategoriesComposite(this.id()).subscribe({
+    this.subcategoriesService.getSubcategoriesComposite(id).subscribe({
       next: (response) => {
-        this.parentCategory.set(response.data.category);
-        const children = response.data.category.children || [];
-        if (children.length > 0) {
-          this.state.setPersisted(children.map(toPersistedRecord));
+        // Manejar ambos formatos: con o sin wrapper data
+        const category =
+          (response as any)?.data?.category || (response as any)?.category;
+
+        if (category) {
+          this.parentCategory.set(category);
+          const children = category.children || [];
+          if (children.length > 0) {
+            this.state.setPersisted(children.map(toPersistedRecord));
+          }
+        } else {
+          console.warn('Estructura de respuesta inesperada:', response);
+          this.parentCategory.set(null);
         }
         this.isLoadingComposite.set(false);
       },
-      error: () => {
+      error: (error) => {
+        console.error('Error loading subcategories:', error);
+        this.toastService.showError('Error al cargar las subcategorías');
         this.isLoadingComposite.set(false);
+        this.parentCategory.set(null);
       },
     });
   }
-
+  
   private subscribeToTableEvents(): void {
     this.subscribeToStatusToggle();
     this.subscribeToVisibilityInMenuToggle();
@@ -166,23 +194,23 @@ export class SubcategoriesPage implements OnInit {
   }
 
   private confirmToDeleteCategory(record: CategoryRecord<EntityData>): void {
-    // this.dialogService
-    //   .openConfirm(
-    //     {
-    //       message: '¿Estás seguro de que deseas eliminar esta subcategoría?',
-    //       confirmText: 'Sí, eliminar',
-    //       cancelText: 'No, mantenerme aquí',
-    //       confirmVariant: 'danger',
-    //     },
-    //     {
-    //       title: 'Confirmar eliminación',
-    //     },
-    //   )
-    //   .onClose$.subscribe((confirmed) => {
-    //     if (confirmed) {
-    //       this.state.markCategoryForDeletion(record.data._recordKey);
-    //     }
-    //   });
+    this.dialogService
+      .openConfirm(
+        {
+          message: '¿Estás seguro de que deseas eliminar esta subcategoría?',
+          confirmText: 'Sí, eliminar',
+          cancelText: 'No, mantenerme aquí',
+          confirmVariant: 'danger',
+        },
+        {
+          title: 'Confirmar eliminación',
+        },
+      )
+      .onClose$.subscribe((confirmed) => {
+        if (confirmed) {
+          this.state.markCategoryForDeletion(record.data._recordKey);
+        }
+      });
   }
 
   onSubmitCategory(event: FormEvent<CategoryFormData>): void {
@@ -190,6 +218,9 @@ export class SubcategoriesPage implements OnInit {
   }
 
   onSaveChanges(): void {
+    const currentId = this.categoryId();
+    if (!currentId) return;
+
     const news = this.state.getBulkSaveItems();
     const updates = this.state.getPendingChanges();
     const deletions = this.state.getDeleteIds();
@@ -198,7 +229,7 @@ export class SubcategoriesPage implements OnInit {
 
     this.syncErrors.set([]);
     this.subcategoriesService
-      .syncCategories(this.id(), {
+      .syncCategories(currentId, {
         newCategories: news,
         updateCategories: updates,
         deleteCategories: deletions,
@@ -211,7 +242,14 @@ export class SubcategoriesPage implements OnInit {
           this.state.applyUpdatedItems(updated);
           this.state.applyDeletedItems(deleted);
           this.syncErrors.set(
-            this.buildSyncErrors(created, updated, deleted, news, updates, deletions),
+            this.buildSyncErrors(
+              created,
+              updated,
+              deleted,
+              news,
+              updates,
+              deletions,
+            ),
           );
           this.notifySyncResult(created, updated, deleted);
         },
@@ -228,27 +266,27 @@ export class SubcategoriesPage implements OnInit {
   }
 
   onCancelChanges(): void {
-    // if (!this.hasPendingChanges()) {
-    //   return this.goBack();
-    // }
-    // this.dialogService
-    //   .openConfirm(
-    //     {
-    //       message:
-    //         '¿Estás seguro de que deseas cancelar? Se perderán los cambios no guardados.',
-    //       confirmText: 'Sí, cancelar',
-    //       cancelText: 'No, mantenerme aquí',
-    //       confirmVariant: 'danger',
-    //     },
-    //     {
-    //       title: 'Confirmar cancelación',
-    //     },
-    //   )
-    //   .onClose$.subscribe((confirmed) => {
-    //     if (confirmed) {
-    //       this.goBack();
-    //     }
-    //   });
+    if (!this.hasPendingChanges()) {
+      return this.goBack();
+    }
+    this.dialogService
+      .openConfirm(
+        {
+          message:
+            '¿Estás seguro de que deseas cancelar? Se perderán los cambios no guardados.',
+          confirmText: 'Sí, cancelar',
+          cancelText: 'No, mantenerme aquí',
+          confirmVariant: 'danger',
+        },
+        {
+          title: 'Confirmar cancelación',
+        },
+      )
+      .onClose$.subscribe((confirmed) => {
+        if (confirmed) {
+          this.goBack();
+        }
+      });
   }
 
   private goBack(): void {
@@ -296,10 +334,14 @@ export class SubcategoriesPage implements OnInit {
     updated: SyncBatchOperation<SyncUpdatedItem>,
     deleted: SyncBatchOperation<SyncDeletedItem>,
     newCategories: ReturnType<SubcategoriesStateService['getBulkSaveItems']>,
-    updateCategories: ReturnType<SubcategoriesStateService['getPendingChanges']>,
+    updateCategories: ReturnType<
+      SubcategoriesStateService['getPendingChanges']
+    >,
     deleteCategories: ReturnType<SubcategoriesStateService['getDeleteIds']>,
   ): SubcategorySyncError[] {
-    const createdNames = new Map(newCategories.map((item) => [item.key, item.name]));
+    const createdNames = new Map(
+      newCategories.map((item) => [item.key, item.name]),
+    );
     const updatedIds = new Set(updateCategories.map((item) => item.id));
     const deletedIds = new Set(deleteCategories);
     return [

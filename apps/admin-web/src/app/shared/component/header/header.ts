@@ -38,7 +38,6 @@ export class Header {
 
   
     firstLetterOfUserName ="E";
-    // TODO: This should come from the user session, but for now it's hardcoded
     rol = computed(() => 'Administrador');
     faBars = faBars;
     faArrowRightFromBracket = faArrowRightFromBracket;

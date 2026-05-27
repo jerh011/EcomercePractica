@@ -14,12 +14,12 @@ import { DEFAULT_CATEGORY_FORM_DATA } from './consts';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormDivider } from '@shared/component/ui/form-divider/form-divider';
 import { Label } from '@shared/component/ui/label/label';
-import { InputText } from '@shared/component/ui/input-text/input-text';
-import{ FormErrorMessage } from '@shared/component/ui/form-error-message/form-error-message';
-import { InputTextarea } from '@shared/component/ui/input-textarea/input-textarea';
-import { Switch } from '@shared/component/ui/switch/switch';
+import { FormErrorMessage } from '@shared/component/ui/form-error-message/form-error-message';
 import { InputImageUpload } from '@shared/component/ui/input-image-upload/input-image-upload';
 import { InputImageUploadConfig } from '@shared/component/ui/input-image-upload/input-image-upload.types';
+import { InputText } from '@shared/component/ui/input-text/input-text';
+import { InputTextarea } from '@shared/component/ui/input-textarea/input-textarea';
+import { Switch } from '@shared/component/ui/switch/switch';
 import { FormActions } from '@shared/component/form-actions/form-actions';
 import {
     CATEGORY_ALLOWED_IMAGE_TYPES,

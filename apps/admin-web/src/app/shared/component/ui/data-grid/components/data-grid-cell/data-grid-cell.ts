@@ -5,9 +5,7 @@ import { NestedValuePipe } from '@shared/pipes/nested-value/nested-value-pipe';
 @Component({
   selector: 'td[ecom-data-grid-cell]',
   imports: [
-    //TODO: Evaluar si es necesario importar el NestedValuePipe aquí o si se puede manejar la lógica de acceso a valores anidados directamente en el componente.
-    // NestedValuePipe
-    
+     NestedValuePipe
   ],
   templateUrl: './data-grid-cell.html',
   styleUrl: './data-grid-cell.css',

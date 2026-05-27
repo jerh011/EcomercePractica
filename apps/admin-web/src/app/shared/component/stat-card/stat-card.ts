@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Card } from '@shared/component/ui/card/card';
+import { Card } from '../ui/card/card';
 
 @Component({
   selector: 'ecom-stat-card',
@@ -10,7 +10,7 @@ import { Card } from '@shared/component/ui/card/card';
     class: 'text-primary'
   }
 })
-export class StatCard {
+export class  StatCard {
 
   label = input<string>('Total de registros');
   value = input<number>(0);

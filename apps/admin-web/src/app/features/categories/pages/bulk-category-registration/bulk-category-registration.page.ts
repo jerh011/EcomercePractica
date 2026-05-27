@@ -1,8 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { PageLayout } from '@shared/component/page-layout/page-layout';
 import { PageHeader } from '@shared/component/page-header/page-header';
 import { Card } from '@shared/component/ui/card/card';
 import { Button } from '@shared/component/ui/button/button';
+import { PageLayout } from '@shared/component/page-layout/page-layout';
 import { CategoryForm } from '@categories/components/forms/category-form/category-form';
 import { CategoriesTable } from '@categories/components/categories-table/categories-table';
 import { createPagination, FormActionsOptions, FormEvent } from '@shared/interfaces';
@@ -18,152 +18,156 @@ import { BulkSaveCategoryItem } from '@categories/services/category/types';
 import { ToastService } from '@shared/services/toast/toast.service';
 import { DialogService } from '@shared/services/toast/dialog/dialog.service';
 import { Location } from '@angular/common';
-//TODO: Agregar validaciones para evitar registros duplicados en la tabla y al momento de guardar.
+
 @Component({
-    selector: 'ecom-bulk-category-registration.page',
-    imports: [PageLayout, PageHeader, 
-        CategoryForm,
-         Card, 
-         CategoriesTable, 
-         Button],
-    templateUrl: './bulk-category-registration.page.html',
-    styleUrl: './bulk-category-registration.page.css',
-    providers: [CategoriesTableService, CategoryService],
+  selector: 'ecom-bulk-category-registration.page',
+  imports: [
+    PageLayout,
+    PageHeader,
+    CategoryForm,
+    Card,
+    CategoriesTable,
+    Button,
+  ],
+  templateUrl: './bulk-category-registration.page.html',
+  styleUrl: './bulk-category-registration.page.css',
+  providers: [CategoriesTableService, CategoryService],
 })
 export class BulkCategoryRegistrationPage implements OnInit {
-    private readonly categoriesTableService: CategoriesTableService =
-        inject(CategoriesTableService);
-    private readonly toastService: ToastService = inject(ToastService);
-    private readonly categoryService: CategoryService = inject(CategoryService);
-    private readonly dialogService = inject(DialogService);
-    private readonly location: Location = inject(Location);
+  private readonly categoriesTableService: CategoriesTableService = inject(
+    CategoriesTableService,
+  );
+  private readonly toastService: ToastService = inject(ToastService);
+  private readonly categoryService: CategoryService = inject(CategoryService);
+  private readonly dialogService = inject(DialogService);
+  private readonly location: Location = inject(Location);
 
-    categories = signal<CategoryDraft[]>([]);
+  categories = signal<CategoryDraft[]>([]);
 
-    readonly canSave = computed(() => this.categories().length > 0);
-    readonly columns = BULK_CATEGORY_REGISTRATION_COLUMNS;
+  readonly canSave = computed(() => this.categories().length > 0);
+  readonly columns = BULK_CATEGORY_REGISTRATION_COLUMNS;
 
-    readonly pagination = createPagination({
-        showPagination: false,
-    });
+  readonly pagination = createPagination({
+    showPagination: false,
+  });
 
-    readonly categoryTableActions: CategoriesActionsOptions = {
-        canDelete: true,
-        canEdit: false,
-        canView: false,
-        canViewSubcategories: false,
-    };
+  readonly categoryTableActions: CategoriesActionsOptions = {
+    canDelete: true,
+    canEdit: false,
+    canView: false,
+    canViewSubcategories: false,
+  };
 
-    readonly formActions = new FormActionsOptions({
-        canCancel: false,
-        canClear: true,
-        clearOnSubmit: true,
-        submitButtonVariant: 'secondary',
-        submitLabel: 'Agregar Registro',
-        clearButtonVariant: 'ghost',
-    });
+  readonly formActions = new FormActionsOptions({
+    canCancel: false,
+    canClear: true,
+    clearOnSubmit: true,
+    submitButtonVariant: 'secondary',
+    submitLabel: 'Agregar Registro',
+    clearButtonVariant: 'ghost',
+  });
 
-    ngOnInit(): void {
-        this.registerTableHandlers();
-    }
+  ngOnInit(): void {
+    this.registerTableHandlers();
+  }
 
-    private registerTableHandlers() {
-        this.registerActionCategoryHanlder();
-    }
+  private registerTableHandlers() {
+    this.registerActionCategoryHanlder();
+  }
 
-    private registerActionCategoryHanlder() {
-        this.categoriesTableService.actionCategory$.subscribe(({ action, record }) => {
-            switch (action) {
-                case 'delete':
-                    this.onDeleteCategory(record);
-                    break;
-            }
-        });
-    }
-
-    private onDeleteCategory(record: CategoryRecord) {
-        this.categories.update((categories) =>
-            categories.filter((c) => c.data._recordKey !== record.data._recordKey),
-        );
-    }
-
-    onSubmit(event: FormEvent<CategoryFormData>) {
-        const draft = toDraftRecord<CategoryFormData>(event.data!);
-        this.categories.update((categories) => [...categories, draft]);
-    }
-
-    onSave() {
-        const categoriesToSave: BulkSaveCategoryItem[] = this.categories().map((c) =>
-            this.toCategoryItem(c),
-        );
-        this.categoryService
-            .saveBatchCategories(categoriesToSave)
-            .subscribe(({ success, data: { succeeded, failed } }) => {
-                if (success) {
-                    const savedCount = succeeded.length;
-                    if (savedCount > 0) {
-                        this.toastService.showSuccess(
-                            `${savedCount} categorías registradas exitosamente.`,
-                        );
-                    }
-                    const failedCount = failed.length;
-                    if (failedCount > 0) {
-                        this.toastService.showError(
-                            `${failedCount} categorías no pudieron ser registradas.`,
-                        );
-                    }
-                    this.categories.update((categories) =>
-                        categories.filter(
-                            (c) => !succeeded.some((s) => s.key === c.data._recordKey),
-                        ),
-                    );
-                } else {
-                    this.toastService.showError(
-                        'Ocurrió un error al registrar las categorías. Por favor, intenta nuevamente.',
-                    );
-                }
-            });
-    }
-
-    private toCategoryItem({ data }: CategoryDraft): BulkSaveCategoryItem {
-        return {
-            key: data._recordKey,
-            description: data.description,
-            imageUrl: this.toCategoryImageUrl(data.imageUrl),
-            isActive: data.isActive,
-            metaDescription: data.metaDescription,
-            metaTitle: data.metaTitle,
-            name: data.name,
-            visibleInMenu: data.visibleInMenu,
-        };
-    }
-
-    private toCategoryImageUrl(value: string[]): string | undefined {
-        return value[0] || undefined;
-    }
-
-    onCancel(): void {
-        if (this.categories().length === 0) {
-            return this.goBack();
+  private registerActionCategoryHanlder() {
+    this.categoriesTableService.actionCategory$.subscribe(
+      ({ action, record }) => {
+        switch (action) {
+          case 'delete':
+            this.onDeleteCategory(record);
+            break;
         }
-        this.dialogService.openConfirm(
-            {
-                message: '¿Estás seguro que deseas cancelar? Se perderán los cambios no guardados.',
-                confirmText: 'Sí, cancelar',
-                confirmVariant: 'danger',
-                cancelText: 'No, continuar editando',
-            },
-            {
-                title: 'Confirmar cancelación',
-            },
-        ).onClose$.subscribe((confirmed) => {
-            if (confirmed) {
-                this.goBack();
-            }
-        });
-    }
+      },
+    );
+  }
 
-    private goBack() {
-        this.location.back();
+  private onDeleteCategory(record: CategoryRecord) {
+    this.categories.update((categories) =>
+      categories.filter((c) => c.data._recordKey !== record.data._recordKey),
+    );
+  }
+
+  onSubmit(event: FormEvent<CategoryFormData>) {
+    const draft = toDraftRecord<CategoryFormData>(event.data!);
+    this.categories.update((categories) => [...categories, draft]);
+  }
+
+  onSave() {
+    const categoriesToSave: BulkSaveCategoryItem[] = this.categories().map(
+      (c) => this.toCategoryItem(c),
+    );
+    this.categoryService
+      .saveBatchCategories(categoriesToSave)
+      .subscribe((response) => {
+        const { succeeded, failed } = response as any;
+        const savedCount = succeeded.length;
+        if (savedCount > 0) {
+          this.toastService.showSuccess(
+            `${savedCount} categorías registradas exitosamente.`,
+          );
+        }
+        const failedCount = failed.length;
+        if (failedCount > 0) {
+          this.toastService.showError(
+            `${failedCount} categorías no pudieron ser registradas.`,
+          );
+        }
+        this.categories.update((categories) =>
+          categories.filter(
+            (c) => !succeeded.some((s: any) => s.key === c.data._recordKey),
+          ),
+        );
+      });
+  }
+
+  private toCategoryItem({ data }: CategoryDraft): BulkSaveCategoryItem {
+    return {
+      key: data._recordKey,
+      description: data.description,
+      imageUrl: this.toCategoryImageUrl(data.imageUrl),
+      isActive: data.isActive,
+      metaDescription: data.metaDescription,
+      metaTitle: data.metaTitle,
+      name: data.name,
+      visibleInMenu: data.visibleInMenu,
+    };
+  }
+
+  private toCategoryImageUrl(value: string[]): string | undefined {
+    return value[0] || undefined;
+  }
+
+  onCancel(): void {
+    if (this.categories().length === 0) {
+      return this.goBack();
     }
+    this.dialogService
+      .openConfirm(
+        {
+          message:
+            '¿Estás seguro que deseas cancelar? Se perderán los cambios no guardados.',
+          confirmText: 'Sí, cancelar',
+          confirmVariant: 'danger',
+          cancelText: 'No, continuar editando',
+        },
+        {
+          title: 'Confirmar cancelación',
+        },
+      )
+      .onClose$.subscribe((confirmed) => {
+        if (confirmed) {
+          this.goBack();
+        }
+      });
+  }
+
+  private goBack() {
+    this.location.back();
+  }
 }

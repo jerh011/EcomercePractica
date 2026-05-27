@@ -90,16 +90,18 @@ $ npx prisma init --datasource-provider postgresql
 $ pnpm add -w prisma@6 @prisma/client@6
 ```
 
+```bash
 pnpm add -w dotenv
-
-
+```
+```bash
 pnpm add -w prisma@latest @prisma/client@latest
-
+```
+```bash
 pnpm add -w --save-dev @types/node
-
-
+```
+```bash
 $env:NX_IGNORE_UNSUPPORTED_TS_SETUP="true"; pnpm nx g @nx/js:library --name=contracts --directory=libs/shared/contracts
-
+```
 pnpm add -w @nestjs/swagger
 
 pnpm add -w @prisma/adapter-pg pg
@@ -140,5 +142,7 @@ New-Item libs/db/prisma/"nombre".
 
 
 
-
 pnpm prisma generate --config=libs/db/prisma.config.ts
+
+cd libs\db
+pnpm prisma migrate dev --config=prisma.config.ts --name init

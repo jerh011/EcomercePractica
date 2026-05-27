@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '@env/environtment.development';
+import { environment } from '@environments/environtment.development';
 import { OffsetPaginationParams } from '@shared/interfaces';
 import { Observable } from 'rxjs';
 import { CategoriesCompositeResponse, CategoriesOffsetResponse } from './types';
@@ -8,8 +8,6 @@ import { CategoriesCompositeResponse, CategoriesOffsetResponse } from './types';
 @Injectable({
     providedIn: 'root',
 })
-
-//TODO: Servicios de categorias
 export class CategoriesService {
     private readonly http: HttpClient = inject(HttpClient);
 

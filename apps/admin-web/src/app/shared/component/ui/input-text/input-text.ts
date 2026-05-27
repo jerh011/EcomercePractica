@@ -26,9 +26,7 @@ import { InputTextSize, InputTextType } from './input-text.types';
     '[class]': 'hostClasses()',
   },
 })
-// TODO: Evaluar si este control debe exponer mas estado de Signal Forms
-// TODO: Exponer readonly, required, invalid y touched si queremos sincronizacion mas completa con [formField]
-// TODO: Revisar si el placeholder por defecto debe quedar en espanol para mantener consistencia con el resto de la UI
+
 export class InputText implements FormValueControl<string>, ControlValueAccessor {
   className = input('', { alias: 'class' });
   size = input<InputTextSize>('md');
