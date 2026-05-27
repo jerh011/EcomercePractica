@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-// import {
+import {
   // AttributeWithCategoriesSwaggerDto,
-  // ListAttributesDataSwaggerDto,
-// } from '../../attributes/dto/attributes.swagger.dto';
+  ListAttributesDataSwaggerDto,
+} from '../../attributes/dto/attributes.swagger.dto';
 import {
   BrandSwaggerDto,
   ListBrandsDataSwaggerDto,
@@ -65,10 +65,10 @@ export class CompositeWarehousesPageFiltersSwaggerDto {
 //   filters!: CompositeWarehousesPageFiltersSwaggerDto;
 // }
 
-// export class CompositeAttributesPageDataSwaggerDto {
-//   @ApiProperty({ type: () => ListAttributesDataSwaggerDto })
-//   table!: ListAttributesDataSwaggerDto;
-// }
+export class CompositeAttributesPageDataSwaggerDto {
+  @ApiProperty({ type: () => ListAttributesDataSwaggerDto })
+  table!: ListAttributesDataSwaggerDto;
+}
 
 export class CompositeAttributesCreateDialogDataSwaggerDto {
   @ApiProperty({ type: () => [CategorySummarySwaggerDto] })
@@ -118,10 +118,10 @@ export class CompositeBrandsPageResponseSwaggerDto extends CompositeSuccessEnvel
 //   data!: CompositeWarehousesPageDataSwaggerDto;
 // }
 
-// export class CompositeAttributesPageResponseSwaggerDto extends CompositeSuccessEnvelopeSwaggerDto {
-//   @ApiProperty({ type: () => CompositeAttributesPageDataSwaggerDto })
-//   data!: CompositeAttributesPageDataSwaggerDto;
-// }
+export class CompositeAttributesPageResponseSwaggerDto extends CompositeSuccessEnvelopeSwaggerDto {
+  @ApiProperty({ type: () => CompositeAttributesPageDataSwaggerDto })
+  data!: CompositeAttributesPageDataSwaggerDto;
+}
 
 export class CompositeAttributesCreateDialogResponseSwaggerDto extends CompositeSuccessEnvelopeSwaggerDto {
   @ApiProperty({ type: () => CompositeAttributesCreateDialogDataSwaggerDto })

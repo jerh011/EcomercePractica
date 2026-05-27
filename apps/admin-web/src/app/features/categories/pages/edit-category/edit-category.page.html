@@ -1,5 +1,6 @@
 <ecom-page-layout [loading]="isLoading()">
-    <header ecom-page-header title="Editar Categoría" description="Modifica cualquier propiedad disponible de la categoría"></header>
+    <header ecom-page-header title="Editar Categoría" description="Modifica cualquier propiedad disponible de la categoría"
+    [showBackButton]="true"></header>
     <main>
         <ecom-card>
             @if (!isLoading()) {

@@ -1,0 +1,72 @@
+<form [class]="className()" class="space-y-6" [formGroup]="attributeForm" (ngSubmit)="onSubmit()">
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <ecom-label class="col-span-2" label="Nombre">
+        <ecom-input-text placeholder="Color..." formControlName="name"></ecom-input-text>
+        <ecom-form-error-message
+          class="mt-2"
+          [control]="attributeForm.controls.name"
+          [messages]="{ required: 'El nombre de la categoría es obligatorio.' }"
+        />
+      </ecom-label>
+      <ecom-label label="Estatus">
+        <ecom-switch size="lg" formControlName="isActive"></ecom-switch>
+      </ecom-label>
+    </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+      <ecom-label class="md:col-span-2 lg:col-span-3" label="Visible en filtros">
+        <ecom-switch size="lg" formControlName="isFilterable"></ecom-switch>
+      </ecom-label>
+      <ecom-label class="md:col-span-2 lg:col-span-3" label="Obligatorio en Tienda">
+        <ecom-switch size="lg" formControlName="isRequired"></ecom-switch>
+      </ecom-label>
+      <ecom-label class="lg:col-span-2" label="Aplica a Todo">
+        <ecom-switch
+          size="lg"
+          formControlName="appliesToAll"
+          (checkedChange)="onApplyToAllChange($event)"
+        ></ecom-switch>
+      </ecom-label>
+      <ecom-label class="md:col-span-3 lg:col-span-4" label="Categorías">
+        <ecom-input-select
+          formControlName="categories"
+          [multiple]="true"
+          classNameOptionsList="max-h-24 overflow-auto"
+          size="sm"
+          (search)="onSearchCategories($event)"
+          [searchable]="true"
+          [options]="categoryOptions()"
+          (scrollToEnd)="onScrollCategoriesToEnd()"
+        />
+
+        @if (selectedCategoryIds().length) {
+          <div class="mt-2 flex flex-wrap gap-2">
+            @for (selected of selectedCategoryIds(); track selected.value) {
+              <ecom-tag size="xs" variant="primary">{{ selected.label }}</ecom-tag>
+            }
+          </div>
+        }
+        <ecom-form-error-message
+          class="mt-2"
+          [control]="attributeForm.controls.categories"
+          [messages]="{ required: 'Las categorías son obligatorias.' }"
+        />
+      </ecom-label>
+    </div>
+  </div>
+  <div class="flex items-center justify-end gap-4">
+    @if (canClear()) {
+      <ecom-button variant="ghost" size="sm" (clicked)="onClear()">
+        {{ clearLabel() }}
+      </ecom-button>
+    }
+    @if (canCancel()) {
+      <ecom-button variant="outline" size="sm" (clicked)="onCancel()">
+        {{ cancelLabel() }}
+      </ecom-button>
+    }
+    <ecom-button variant="secondary" type="submit" size="sm" [disabled]="!canSubmit()">
+      {{ submitLabel() }}
+    </ecom-button>
+  </div>
+</form>

@@ -14,7 +14,7 @@ import { LegacyHttpExceptionFilter } from '../../common/http/legacy-http-excepti
 import { CompositeService } from './composite.service';
 import {
   CompositeAttributesCreateDialogResponseSwaggerDto,
-  // CompositeAttributesPageResponseSwaggerDto,
+  CompositeAttributesPageResponseSwaggerDto,
   CompositeBulkAttributeRegistrationResponseSwaggerDto,
   CompositeBrandsPageResponseSwaggerDto,
   CompositeCategoriesPageResponseSwaggerDto,
@@ -24,8 +24,8 @@ import {
   // CompositeWarehousesPageResponseSwaggerDto,
 } from './dto/composite.swagger.dto';
 import {
-  // validateAttributesCreateDialogQuery,
-  // validateAttributesPageQuery,
+  validateAttributesCreateDialogQuery,
+  validateAttributesPageQuery,
   validateBrandsPageQuery,
   validateCategoriesPageQuery,
   validateCategoryChildrenParams,
@@ -151,81 +151,77 @@ export class CompositeController {
   //   return this.compositeService.getWarehousesPage(input);
   // }
 
-  //TODO composite attributes page endpoint implementation is pending AttributesModule and related service methods implementation
-  // @swaggerResponseExamples.compositeAttributes
-  // @SuccessResponse('Attributes page data retrieved successfully')
-  // @Get('attributes')
-  // @ApiOperation({ summary: 'Get composite attributes page data' })
-  // @ApiQuery({ name: 'page', required: false, type: Number })
-  // @ApiQuery({ name: 'pageSize', required: false, type: Number })
-  // @ApiQuery({ name: 'showDeleted', required: false, type: Boolean })
-  // @ApiOkResponse({
-  //   description: 'Attributes page data retrieved successfully.',
-  //   type: CompositeAttributesPageResponseSwaggerDto,
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'Invalid attributes page query parameters.',
-  // })
-  // async getAttributesPage(@Query() query: unknown) {
-  //   const input = validateAttributesPageQuery(query);
-  //   return this.compositeService.getAttributesPage(input);
-  // }
+  @swaggerResponseExamples.compositeAttributes
+  @SuccessResponse('Attributes page data retrieved successfully')
+  @Get('attributes')
+  @ApiOperation({ summary: 'Get composite attributes page data' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'pageSize', required: false, type: Number })
+  @ApiQuery({ name: 'showDeleted', required: false, type: Boolean })
+  @ApiOkResponse({
+    description: 'Attributes page data retrieved successfully.',
+    type: CompositeAttributesPageResponseSwaggerDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid attributes page query parameters.',
+  })
+  async getAttributesPage(@Query() query: unknown) {
+    const input = validateAttributesPageQuery(query);
+    return this.compositeService.getAttributesPage(input);
+  }
 
-  //TODO composite attribute create dialog endpoint implementation is pending AttributesModule and related service methods implementation
-  // @swaggerResponseExamples.compositeAttributesCreateDialog
-  // @SuccessResponse('Attributes create dialog data retrieved successfully')
-  // @Get('attributes/create-dialog')
-  // @ApiOperation({ summary: 'Get composite attribute create dialog data' })
-  // @ApiOkResponse({
-  //   description: 'Attributes create dialog data retrieved successfully.',
-  //   type: CompositeAttributesCreateDialogResponseSwaggerDto,
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'Invalid create dialog query parameters.',
-  // })
-  // async getAttributesCreateDialog(@Query() query: unknown) {
-  //   validateAttributesCreateDialogQuery(query);
-  //   return this.compositeService.getAttributesCreateDialog();
-  // }
+  @swaggerResponseExamples.compositeAttributesCreateDialog
+  @SuccessResponse('Attributes create dialog data retrieved successfully')
+  @Get('attributes/create-dialog')
+  @ApiOperation({ summary: 'Get composite attribute create dialog data' })
+  @ApiOkResponse({
+    description: 'Attributes create dialog data retrieved successfully.',
+    type: CompositeAttributesCreateDialogResponseSwaggerDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid create dialog query parameters.',
+  })
+  async getAttributesCreateDialog(@Query() query: unknown) {
+    validateAttributesCreateDialogQuery(query);
+    return this.compositeService.getAttributesCreateDialog();
+  }
 
-  //TODO composite attribute register endpoint implementation is pending AttributesModule and related service methods implementation
-  // @swaggerResponseExamples.compositeRegisterAttribute
-  // @SuccessResponse('Attribute register composite data retrieved successfully')
-  // @Get('attributes/register-attribute')
-  // @ApiOperation({ summary: 'Get composite attribute register page data' })
-  // @ApiOkResponse({
-  //   description: 'Attribute register composite data retrieved successfully.',
-  //   type: CompositeRegisterAttributeResponseSwaggerDto,
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'Invalid register attribute query parameters.',
-  // })
-  // async getRegisterAttributeComposite(@Query() query: unknown) {
-  //   validateAttributesCreateDialogQuery(query);
-  //   return this.compositeService.getRegisterAttributeComposite();
-  // }
+  @swaggerResponseExamples.compositeRegisterAttribute
+  @SuccessResponse('Attribute register composite data retrieved successfully')
+  @Get('attributes/register-attribute')
+  @ApiOperation({ summary: 'Get composite attribute register page data' })
+  @ApiOkResponse({
+    description: 'Attribute register composite data retrieved successfully.',
+    type: CompositeRegisterAttributeResponseSwaggerDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid register attribute query parameters.',
+  })
+  async getRegisterAttributeComposite(@Query() query: unknown) {
+    validateAttributesCreateDialogQuery(query);
+    return this.compositeService.getRegisterAttributeComposite();
+  }
 
-  //TODO composite attribute bulk registration endpoint implementation is pending AttributesModule and related service methods implementation
-  // @swaggerResponseExamples.compositeBulkAttributeRegistration
-  // @SuccessResponse(
-  //   'Attribute bulk registration composite data retrieved successfully',
-  // )
-  // @Get('attributes/bulk-registration')
-  // @ApiOperation({
-  //   summary: 'Get composite attribute bulk registration page data',
-  // })
-  // @ApiOkResponse({
-  //   description:
-  //     'Attribute bulk registration composite data retrieved successfully.',
-  //   type: CompositeBulkAttributeRegistrationResponseSwaggerDto,
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'Invalid bulk registration query parameters.',
-  // })
-  // async getBulkAttributeRegistrationComposite(@Query() query: unknown) {
-  //   validateAttributesCreateDialogQuery(query);
-  //   return this.compositeService.getBulkAttributeRegistrationComposite();
-  // }
+  @swaggerResponseExamples.compositeBulkAttributeRegistration
+  @SuccessResponse(
+    'Attribute bulk registration composite data retrieved successfully',
+  )
+  @Get('attributes/bulk-registration')
+  @ApiOperation({
+    summary: 'Get composite attribute bulk registration page data',
+  })
+  @ApiOkResponse({
+    description:
+      'Attribute bulk registration composite data retrieved successfully.',
+    type: CompositeBulkAttributeRegistrationResponseSwaggerDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid bulk registration query parameters.',
+  })
+  async getBulkAttributeRegistrationComposite(@Query() query: unknown) {
+    validateAttributesCreateDialogQuery(query);
+    return this.compositeService.getBulkAttributeRegistrationComposite();
+  }
 
   @swaggerResponseExamples.compositeSyncCategory
   @SuccessResponse('Category sync composite data retrieved successfully')

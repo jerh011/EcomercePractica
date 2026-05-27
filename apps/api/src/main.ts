@@ -9,6 +9,7 @@ async function bootstrap() {
     app.enableCors({
       origin: 'http://localhost:4200',
       credentials: true,
+      exposedHeaders: ['ETag'],
     });
 
   const globalPrefix = 'api';

@@ -1,0 +1,50 @@
+<ecom-data-grid [columns]="columns()" [data]="rows()" [rowsLimit]="pageSize()">
+  <ng-template
+    ecom-cell-template
+    template="categories"
+    let-row
+    let-column="column"
+  >
+    @if (row.categories?.length) {
+    <div class="flex items-center gap-1 justify-center">
+      @for (category of row.categories; track category.id) {
+      <ecom-tag size="xs">{{ category.name }}</ecom-tag>
+      }
+    </div>
+    } @else {
+    <span class="text-sm text-gray-500">Sin categorías</span>
+    }
+  </ng-template>
+  <ng-template
+    ecom-cell-template
+    template="filterable"
+    let-row
+    let-column="column"
+  >
+    <span>{{ row.isFilterable ? 'Sí' : 'No' }}</span>
+  </ng-template>
+  <ng-template ecom-cell-template template="active" let-row let-column="column">
+    <ecom-switch variant="secondary" [(checked)]="row.isActive"></ecom-switch>
+  </ng-template>
+  <ng-template
+    ecom-cell-template
+    template="required"
+    let-row
+    let-column="column"
+  >
+    <span>{{ row.isRequired ? 'Sí' : 'No' }}</span>
+  </ng-template>
+  <ng-template
+    ecom-cell-template
+    template="actions"
+    let-row
+    let-column="column"
+  >
+    <ecom-attribute-actions
+      [options]="actionsColumn()"
+      (delete)="onDelete(row)"
+      (view)="onView(row)"
+      (edit)="onEdit(row)"
+    />
+  </ng-template>
+</ecom-data-grid>

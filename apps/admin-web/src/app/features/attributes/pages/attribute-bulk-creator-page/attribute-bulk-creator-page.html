@@ -1,0 +1,30 @@
+<ecom-page-layout>
+  <header
+    ecom-page-header
+    title="Registro múltiple de atributos"
+    description="Crea uno o más atributos para el catálogo. Los campos con * son obligatorios."
+  ></header>
+  <main class="flex flex-col gap-2">
+    <article class="flex items-center justify-end gap-4">
+      <ecom-button variant="outline" (clicked)="onCancel()">Cancelar</ecom-button>
+      <ecom-button [disabled]="!hasChanges()" (clicked)="onSaveChanges()">Guardar</ecom-button>
+    </article>
+    <ecom-card>
+      <ecom-attribute-form
+        [categories]="categoryOptions()"
+        [actionOptions]="formActionOptions()"
+        (searchCategories)="onSearchCategories($event)"
+        (scrollCategoriesToEnd)="onScrollCategoriesToEnd()"
+        (submitted)="onSubmit($event)"
+      ></ecom-attribute-form>
+    </ecom-card>
+    <ecom-card>
+      <ecom-attributes-table
+        [data]="attributes()"
+        [columns]="columns"
+        [actionsColumn]="attributesActionOptions()"
+        (delete)="onDelete($event)"
+      ></ecom-attributes-table>
+    </ecom-card>
+  </main>
+</ecom-page-layout>

@@ -1,0 +1,21 @@
+<ecom-stat-card [value]="totalCount()" />
+<ecom-dropdown>
+  <ecom-dropdown-trigger>
+    <ecom-button class="flex-row-reverse">
+      Nuevo registro
+      <fa-icon slot="icon" [icon]="faChevronDown" />
+    </ecom-button>
+  </ecom-dropdown-trigger>
+  <ecom-dropdown-content class="w-48">
+    <ecom-dropdown-group>
+      <ecom-dropdown-item
+        label="Registro único"
+        (click)="onAttributeRegistrationModeSelect('unique')"
+      />
+      <ecom-dropdown-item
+        label="Registro múltiple"
+        (click)="onAttributeRegistrationModeSelect('multiple')"
+      />
+    </ecom-dropdown-group>
+  </ecom-dropdown-content>
+</ecom-dropdown>

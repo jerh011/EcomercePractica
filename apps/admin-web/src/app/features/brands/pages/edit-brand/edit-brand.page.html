@@ -1,5 +1,6 @@
 <ecom-page-layout [loading]="isLoading()">
-    <header ecom-page-header title="Editar Marca" description="Modifica cualquier propiedad disponible de la marca"></header>
+    <header ecom-page-header title="Editar Marca" description="Modifica cualquier propiedad disponible de la marca"
+    [showBackButton]="true"></header>
     <main>
         <ecom-card>
             @if (!isLoading() && brandFormData()) {

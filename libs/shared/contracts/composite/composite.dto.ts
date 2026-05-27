@@ -23,13 +23,13 @@ export interface AttributeDto {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
-// export interface AttributeWithCategoriesDto extends AttributeDto {}
+export type AttributeWithCategoriesDto = AttributeDto;
 
-// export interface ListAttributesResultDto {
-//   attributes: AttributeWithCategoriesDto[];
-//   totalCount: number;
-//   totalPages: number;
-// }
+export interface ListAttributesResultDto {
+  attributes: AttributeWithCategoriesDto[];
+  totalCount: number;
+  totalPages: number;
+}
 
 export interface CategoriesPageDto {
   table: ListCategoriesResultDto;
@@ -54,9 +54,9 @@ export interface WarehousesPageFiltersDto {
 //   filters: WarehousesPageFiltersDto;
 // }
 
-// export interface AttributesPageDto {
-//   table: ListAttributesResultDto;
-// }
+export interface AttributesPageDto {
+  table: ListAttributesResultDto;
+}
 
 export interface AttributesCreateDialogDto {
   categories: CategorySummaryDto[];
