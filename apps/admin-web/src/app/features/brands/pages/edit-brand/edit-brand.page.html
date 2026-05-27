@@ -1,9 +1,18 @@
-<ecom-page-layout>
-    <header ecom-page-header [showBackButton]="true" title="Edita la Marca" description="Edita los detalles de la marca"></header>
+<ecom-page-layout [loading]="isLoading()">
+    <header ecom-page-header title="Editar Marca" description="Modifica cualquier propiedad disponible de la marca"></header>
     <main>
         <ecom-card>
-            @if (brandFormData()) {
-                <ecom-brand-form [initialData]="brandFormData()!" (submitted)="onSaveChanges($event)" />
+            @if (!isLoading() && brandFormData()) {
+                <ecom-brand-form 
+                    [initialData]="brandFormData()!" 
+                    (submitted)="onSaveChanges($event)" 
+                    (canceled)="onCancel($event)" 
+                />
+            } @else {
+                <div class="flex justify-center items-center py-8">
+                    <div class="ecom-spinner"></div>
+                    <span class="ml-2">Cargando marca...</span>
+                </div>
             }
         </ecom-card>
     </main>

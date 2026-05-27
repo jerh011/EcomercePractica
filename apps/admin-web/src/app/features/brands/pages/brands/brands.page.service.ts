@@ -7,37 +7,45 @@ import { BrandsOffsetResponse } from './types';
 import { environment } from '@environments/environtment.development';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class BrandsPageService {
-    paginationParams = signal<OffsetPaginationParams>({
-        page: 1,
-        pageSize: 5,
-        paginationType: 'offset',
-        query: '',
-    });
+  paginationParams = signal<OffsetPaginationParams>({
+    page: 1,
+    pageSize: 5,
+    paginationType: 'offset',
+    query: '',
+  });
 
-    updatePage(newPage: number): void {
-        this.paginationParams.update((params) => ({ ...params, page: newPage }));
-    }
+  updatePage(newPage: number): void {
+    this.paginationParams.update((params) => ({ ...params, page: newPage }));
+  }
 
-    private readonly http: HttpClient = inject(HttpClient);
+  private readonly http: HttpClient = inject(HttpClient);
 
-    getCompositeBrandsPage(): Observable<BrandsOffsetResponse> {
-        return this.http.get<BrandsOffsetResponse>(`${environment.apiUrl}/brands`, {
-            params: {
-                page: this.paginationParams().page.toString(),
-                pageSize: this.paginationParams().pageSize.toString(),
-            },
-        });
-    }
+  // ✅ CORREGIDO: Usar la ruta correcta /composite/brands
+  getCompositeBrandsPage(): Observable<BrandsOffsetResponse> {
+    return this.http.get<BrandsOffsetResponse>(
+      `${environment.apiUrl}/composite/brands`,
+      {
+        params: {
+          page: this.paginationParams().page.toString(),
+          pageSize: this.paginationParams().pageSize.toString(),
+        },
+      },
+    );
+  }
 
-    fetchBrands(): Observable<BrandsOffsetResponse> {
-        return this.http.get<BrandsOffsetResponse>(`${environment.apiUrl}/brands`, {
-            params: {
-                page: this.paginationParams().page.toString(),
-                pageSize: this.paginationParams().pageSize.toString(),
-            },
-        });
-    }
+  // ✅ CORREGIDO: También aquí
+  fetchBrands(): Observable<BrandsOffsetResponse> {
+    return this.http.get<BrandsOffsetResponse>(
+      `${environment.apiUrl}/composite/brands`,
+      {
+        params: {
+          page: this.paginationParams().page.toString(),
+          pageSize: this.paginationParams().pageSize.toString(),
+        },
+      },
+    );
+  }
 }

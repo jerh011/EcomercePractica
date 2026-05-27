@@ -40,7 +40,7 @@ export class BrandDetailsDialog implements IDialogComponent<string, void> {
 
         this.brandService.getBrandById(brandId).subscribe({
             next: (response) => {
-                this.brand.set(response.data);
+                this.brand.set(response);
                 this.isLoading.set(false);
             },
             error: (error) => {

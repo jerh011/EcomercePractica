@@ -10,7 +10,6 @@ import { validateListBrandsQuery } from '../../brands/validations/brands.validat
 
 export const validateCategoriesPageQuery = validateListCategoriesQuery;
 export const validateBrandsPageQuery = validateListBrandsQuery;
-
 // export const validateWarehousesPageQuery = validateListWarehousesQuery;
 
 export function validateCategoryChildrenParams(value: unknown): { id: string } {
