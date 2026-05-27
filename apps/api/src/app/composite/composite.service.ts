@@ -5,8 +5,8 @@ import { CategoryWithChildrenDto } from '@ecomercepractica/shared/contracts/cate
 // import { ListWarehousesQueryDto } from '@ecomercepractica/shared/contracts/inventory/dto/input/list-warehouses.dto';
 import { CategoriesService } from '../categories/categories.service';
 import { BrandsService } from '../brands/brands.service';
-// import { PrismaService } from '../../prisma/prisma.service';
-// import { PaginationService } from '../common/pagination/pagination.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { PaginationService } from '../common/pagination/pagination.service';
 
 import {
   CategoriesPageDto,
@@ -20,17 +20,18 @@ import {
   // WarehousesPageDto,
 } from '@ecomercepractica/shared/contracts/composite/composite.dto';
 import {
-  // AttributeRow,
-  // toAttributeWithCategoriesDto,
+  AttributeRow,
+  toAttributeWithCategoriesDto,
   toCategorySummaryDto,
 } from './mappers/composite.mapper';
 // import { StoreSettingsService } from '../store-settings/store-settings.service';
 // import { WarehousesService } from '../warehouses/warehouses.service';
+import { AttributesPageDto } from '@ecomercepractica/shared/contracts/composite/composite.dto';
 
-// type AttributeDelegate = {
-//   findMany(args: unknown): Promise<AttributeRow[]>;
-//   count(args: unknown): Promise<number>;
-// };
+type AttributeDelegate = {
+  findMany(args: unknown): Promise<AttributeRow[]>;
+  count(args: unknown): Promise<number>;
+};
 
 export interface ListAttributesQuery {
   showDeleted?: boolean;
@@ -45,8 +46,8 @@ export class CompositeService {
     private readonly brandsService: BrandsService,
     // private readonly warehousesService: WarehousesService,
     // private readonly storeSettingsService: StoreSettingsService,
-    // private readonly prisma: PrismaService,
-    // private readonly pagination: PaginationService,
+    private readonly prisma: PrismaService,
+    private readonly pagination: PaginationService,
   ) {}
 
   async getCategoriesPage(
@@ -146,45 +147,45 @@ export class CompositeService {
       .map(toCategorySummaryDto);
   }
 
-  // async getAttributesPage(
-  //   input: ListAttributesQuery,
-  // ): Promise<AttributesPageDto> {
-  //   const pageSize = input.pageSize ?? 25;
-  //   const window = this.pagination.offsetWindow(input.page, pageSize);
-  //   const where = input.showDeleted ? {} : { deletedAt: null };
-  //   const [rows, totalCount] = await Promise.all([
-  //     this.attribute.findMany({
-  //       where,
-  //       include: {
-  //         categoryLinks: {
-  //           include: {
-  //             category: {
-  //               select: {
-  //                 id: true,
-  //                 name: true,
-  //                 slug: true,
-  //               },
-  //             },
-  //           },
-  //         },
-  //       },
-  //       orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
-  //       take: window.pageSize,
-  //       skip: window.offset,
-  //     }),
-  //     this.attribute.count({ where }),
-  //   ]);
+  async getAttributesPage(
+    input: ListAttributesQuery,
+  ): Promise<AttributesPageDto> {
+    const pageSize = input.pageSize ?? 25;
+    const window = this.pagination.offsetWindow(input.page, pageSize);
+    const where = input.showDeleted ? {} : { deletedAt: null };
+    const [rows, totalCount] = await Promise.all([
+      this.attribute.findMany({
+        where,
+        include: {
+          categoryLinks: {
+            include: {
+              category: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
+        take: window.pageSize,
+        skip: window.offset,
+      }),
+      this.attribute.count({ where }),
+    ]);
 
-  //   return {
-  //     table: {
-  //       attributes: rows.map(toAttributeWithCategoriesDto),
-  //       ...this.pagination.offsetMetadata(totalCount, window.pageSize),
-  //     },
-  //   };
-  // }
+    return {
+      table: {
+        attributes: rows.map(toAttributeWithCategoriesDto),
+        ...this.pagination.offsetMetadata(totalCount, window.pageSize),
+      },
+    };
+  }
 
-  // private get attribute(): AttributeDelegate {
-  //   return (this.prisma.client as unknown as { attribute: AttributeDelegate })
-  //     .attribute;
-  // }
+  private get attribute(): AttributeDelegate {
+    return (this.prisma.client as unknown as { attribute: AttributeDelegate })
+      .attribute;
+  }
 }

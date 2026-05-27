@@ -1,0 +1,32 @@
+<ecom-page-layout>
+  <header
+    ecom-page-header
+    title="Atributos"
+    description="Gestiona los atributos para distintos productos"
+    [showBackButton]="true"
+  ></header>
+  <article class="mb-5">
+    <ecom-attributes-toolbar
+      [totalCount]="totalCount()"
+      (registrationMode)="onAttributeRegistrationModeSelect($event)"
+    />
+  </article>
+  <main class="">
+    <ecom-card>
+      <ecom-attributes-table
+        [columns]="columns"
+        [data]="rows()"
+        [pageSize]="pageSize()"
+        (delete)="onDeleteAttribute($event)"
+        (view)="onViewAttributeDetails($event)"
+        (edit)="onEditAttribute($event)"
+      ></ecom-attributes-table>
+      <ecom-pagination-footer
+        slot="footer"
+        [currentPage]="currentPage()"
+        [pages]="totalPages()"
+        (pageChange)="onPageChange($event)"
+      />
+    </ecom-card>
+  </main>
+</ecom-page-layout>

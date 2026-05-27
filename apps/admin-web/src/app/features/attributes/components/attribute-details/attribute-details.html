@@ -1,0 +1,27 @@
+<div class="flex items-center gap-2">
+  @let isActive = attribute().isActive;
+  <ecom-badge [variant]="isActive? 'default': 'secondary'">{{isActiveLabel()}}</ecom-badge>
+  @let isFilterable = attribute().isFilterable;
+  <ecom-badge [variant]="isFilterable? 'default': 'secondary'">{{isFilterableLabel()}}</ecom-badge>
+  @let isRequired = attribute().isRequired;
+  <ecom-badge [variant]="isRequired? 'default': 'secondary'">{{isRequiredLabel()}}</ecom-badge>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <ecom-label label="Nombre">
+    <ecom-input-text [value]="attribute().name" [readonly]="true" />
+  </ecom-label>
+  <ecom-label label="Slug">
+    <ecom-input-text [value]="attribute().slug" [readonly]="true" />
+  </ecom-label>
+  <ecom-label label="Categorías aplicadas">
+    @if (attribute().categories.length > 0) {
+    <div class="flex flex-wrap gap-2">
+      @for(category of attribute().categories; track category.id) {
+      <ecom-badge variant="outline">{{category.name}}</ecom-badge>
+      }
+    </div>
+    } @else {
+    <ecom-badge variant="outline">{{appliesToAllLabel()}}</ecom-badge>
+    }
+  </ecom-label>
+</div>

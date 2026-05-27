@@ -1,0 +1,10 @@
+<div class="p-4 h-full">
+  <ecom-attribute-form
+    (cancel)="onCancel($event)"
+    (submitted)="onFormSubmitted($event)"
+    (searchCategories)="onSearchCategories($event)"
+    (scrollCategoriesToEnd)="onScrollCategoriesToEnd()"
+    [categories]="categoryOptions()"
+    class="h-full flex flex-col justify-between"
+  ></ecom-attribute-form>
+</div>

@@ -1,5 +1,6 @@
 <ecom-page-layout>
-    <header ecom-page-header [showBackButton]="true" title="Registro de Marcas en Lote" description="Registra múltiples marcas de una sola vez"></header>
+    <header ecom-page-header [showBackButton]="true" title="Registro de Marcas en Lote" description="Registra múltiples marcas de una sola vez"
+    [showBackButton]="true"></header>
     <article class="flex items-center justify-end gap-2 mb-2">
         <ecom-button variant="outline">Cancelar</ecom-button>
         <ecom-button [disabled]="!hasChanges()" (clicked)="saveChanges()">Guardar</ecom-button>

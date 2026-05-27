@@ -1,0 +1,21 @@
+<ecom-page-layout>
+  <header
+    ecom-page-header
+    title="Editar Atributo"
+    description="Edita los campos del atributo"
+    [showBackButton]="true"
+  ></header>
+  <main>
+    <ecom-card>
+      @if (attribute()) {
+      <ecom-attribute-form
+        [initialData]="attribute()!"
+        [categories]="categoryOptions()"
+        (searchCategories)="onSearchCategories($event)"
+        (scrollCategoriesToEnd)="onScrollCategoriesToEnd()"
+        (submitted)="onSubmit($event)"
+      ></ecom-attribute-form>
+      }
+    </ecom-card>
+  </main>
+</ecom-page-layout>

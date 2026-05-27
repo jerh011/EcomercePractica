@@ -1,4 +1,4 @@
-// import type { AttributeWithCategoriesDto } from '@ecomercepractica/shared/contracts/composite/composite.dto';
+import type { AttributeWithCategoriesDto } from '@ecomercepractica/shared/contracts/composite/composite.dto';
 import type { CategorySummaryDto } from '@ecomercepractica/shared/contracts/common/dto/output/entity-summary.dto';
 
 export interface AttributeRow {
@@ -34,25 +34,25 @@ export function toCategorySummaryDto(category: {
   };
 }
 
-// export function toAttributeWithCategoriesDto(
-//   row: AttributeRow,
-// ): AttributeWithCategoriesDto {
-//   const categories = (row.categoryLinks ?? []).map((link) =>
-//     toCategorySummaryDto(link.category),
-//   );
+export function toAttributeWithCategoriesDto(
+  row: AttributeRow,
+): AttributeWithCategoriesDto {
+  const categories = (row.categoryLinks ?? []).map((link) =>
+    toCategorySummaryDto(link.category),
+  );
 
-//   return {
-//     id: row.id,
-//     name: row.name,
-//     slug: row.slug,
-//     description: row.description ?? undefined,
-//     displayOrder: row.displayOrder,
-//     isActive: row.isActive,
-//     isFilterable: row.isFilterable,
-//     appliesToAll: row.appliesToAll,
-//     isRequired: row.isRequired,
-//     categories,
-//     createdAt: row.createdAt ?? null,
-//     updatedAt: row.updatedAt ?? null,
-//   };
-// }
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description ?? undefined,
+    displayOrder: row.displayOrder,
+    isActive: row.isActive,
+    isFilterable: row.isFilterable,
+    appliesToAll: row.appliesToAll,
+    isRequired: row.isRequired,
+    categories,
+    createdAt: row.createdAt ?? null,
+    updatedAt: row.updatedAt ?? null,
+  };
+}
