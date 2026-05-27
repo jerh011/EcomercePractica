@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-// import { ListBrandsQueryDto } from '@ecomercepractica/shared/contracts/brands/dto/input/list-brands.dto';
+import { ListBrandsQueryDto } from '@ecomercepractica/shared/contracts/brands/dto/input/list-brands.dto';
 import { ListCategoriesQueryDto } from '@ecomercepractica/shared/contracts/categories/input/list-categories.dto';
 import { CategoryWithChildrenDto } from '@ecomercepractica/shared/contracts/categories/output/category.dto';
 // import { ListWarehousesQueryDto } from '@ecomercepractica/shared/contracts/inventory/dto/input/list-warehouses.dto';
 import { CategoriesService } from '../categories/categories.service';
-// import { BrandsService } from '../brands/brands.service';
+import { BrandsService } from '../brands/brands.service';
 // import { PrismaService } from '../../prisma/prisma.service';
 // import { PaginationService } from '../common/pagination/pagination.service';
 
@@ -15,7 +15,7 @@ import {
   AttributesCreateDialogDto,
   AttributeFormOptionsDto,
   BulkAttributeRegistrationCompositeDto,
-  // BrandsPageDto,
+  BrandsPageDto,
   RegisterAttributeCompositeDto,
   // WarehousesPageDto,
 } from '@ecomercepractica/shared/contracts/composite/composite.dto';
@@ -42,7 +42,7 @@ export interface ListAttributesQuery {
 export class CompositeService {
   constructor(
     private readonly categoriesService: CategoriesService,
-    // private readonly brandsService: BrandsService,
+    private readonly brandsService: BrandsService,
     // private readonly warehousesService: WarehousesService,
     // private readonly storeSettingsService: StoreSettingsService,
     // private readonly prisma: PrismaService,
@@ -61,20 +61,20 @@ export class CompositeService {
     return { category };
   }
 
-  // async getBrandsPage(input: ListBrandsQueryDto): Promise<BrandsPageDto> {
-  //   const table = await this.brandsService.listBrands(input);
-  //   const legacyTable = table as typeof table & {
-  //     brands?: typeof table.brands;
-  //   };
-  //   const { brands, ...metadata } = legacyTable;
+  async getBrandsPage(input: ListBrandsQueryDto): Promise<BrandsPageDto> {
+    const table = await this.brandsService.listBrands(input);
+    const legacyTable = table as typeof table & {
+      brands?: typeof table.brands;
+    };
+    const { brands, ...metadata } = legacyTable;
 
-  //   return {
-  //     table: {
-  //       ...metadata,
-  //       brands: legacyTable.brands ?? brands ?? [],
-  //     },
-  //   };
-  // }
+    return {
+      table: {
+        ...metadata,
+        brands: legacyTable.brands ?? brands ?? [],
+      },
+    };
+  }
 
   // async getWarehousesPage(
   //   input: ListWarehousesQueryDto,

@@ -3,10 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
   // AttributeWithCategoriesSwaggerDto,
   // ListAttributesDataSwaggerDto,
 // } from '../../attributes/dto/attributes.swagger.dto';
-// import {
-//   BrandSwaggerDto,
-//   ListBrandsDataSwaggerDto,
-// } from '../../brands/dto/brands.swagger.dto';
+import {
+  BrandSwaggerDto,
+  ListBrandsDataSwaggerDto,
+} from '../../brands/dto/brands.swagger.dto';
+
 import {
   CategorySwaggerDto,
   CategoryWithChildrenSwaggerDto,
@@ -41,15 +42,15 @@ export class CompositeCategoryChildrenDataSwaggerDto {
   category!: CategoryWithChildrenSwaggerDto | null;
 }
 
-// export class CompositeBrandsPageTableSwaggerDto extends ListBrandsDataSwaggerDto {
-//   @ApiProperty({ type: () => [BrandSwaggerDto] })
-//   brands!: BrandSwaggerDto[];
-// }
+export class CompositeBrandsPageTableSwaggerDto extends ListBrandsDataSwaggerDto {
+  @ApiProperty({ type: () => [BrandSwaggerDto] })
+  override brands!: BrandSwaggerDto[];
+}
 
-// export class CompositeBrandsPageDataSwaggerDto {
-//   @ApiProperty({ type: () => CompositeBrandsPageTableSwaggerDto })
-//   table!: CompositeBrandsPageTableSwaggerDto;
-// }
+export class CompositeBrandsPageDataSwaggerDto {
+  @ApiProperty({ type: () => CompositeBrandsPageTableSwaggerDto })
+  table!: CompositeBrandsPageTableSwaggerDto;
+}
 
 export class CompositeWarehousesPageFiltersSwaggerDto {
   @ApiProperty({ type: () => [MexicoStateCatalogSummarySwaggerDto] })
@@ -107,10 +108,10 @@ export class CompositeCategoryChildrenResponseSwaggerDto extends CompositeSucces
   data!: CompositeCategoryChildrenDataSwaggerDto;
 }
 
-// export class CompositeBrandsPageResponseSwaggerDto extends CompositeSuccessEnvelopeSwaggerDto {
-//   @ApiProperty({ type: () => CompositeBrandsPageDataSwaggerDto })
-//   data!: CompositeBrandsPageDataSwaggerDto;
-// }
+export class CompositeBrandsPageResponseSwaggerDto extends CompositeSuccessEnvelopeSwaggerDto {
+  @ApiProperty({ type: () => CompositeBrandsPageDataSwaggerDto })
+  data!: CompositeBrandsPageDataSwaggerDto;
+}
 
 // export class CompositeWarehousesPageResponseSwaggerDto extends CompositeSuccessEnvelopeSwaggerDto {
 //   @ApiProperty({ type: () => CompositeWarehousesPageDataSwaggerDto })

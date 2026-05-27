@@ -40,6 +40,7 @@
       "@ecomercepractica/shared/validations": [
         "libs/shared/validations/index.ts"
       ],
+      "@brands/*": ["apps/admin-web/src/app/features/brands/*"],
       "@ecomercepractica/shared/validations/*": ["libs/shared/validations/*"]
       // "@org/shared-ui": ["./libs/shared-ui/src/index.ts"],
       // "@org/db": ["./libs/db/src/index.ts"]

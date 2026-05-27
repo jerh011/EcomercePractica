@@ -16,7 +16,7 @@ import {
   CompositeAttributesCreateDialogResponseSwaggerDto,
   // CompositeAttributesPageResponseSwaggerDto,
   CompositeBulkAttributeRegistrationResponseSwaggerDto,
-  // CompositeBrandsPageResponseSwaggerDto,
+  CompositeBrandsPageResponseSwaggerDto,
   CompositeCategoriesPageResponseSwaggerDto,
   CompositeCategoryChildrenResponseSwaggerDto,
   CompositeRegisterAttributeResponseSwaggerDto,
@@ -26,7 +26,7 @@ import {
 import {
   // validateAttributesCreateDialogQuery,
   // validateAttributesPageQuery,
-  // validateBrandsPageQuery,
+  validateBrandsPageQuery,
   validateCategoriesPageQuery,
   validateCategoryChildrenParams,
   // validateWarehousesPageQuery,
@@ -42,7 +42,7 @@ import { SuccessResponse } from '../common/interceptors/success-response.decorat
 @ApiExtraModels(
   CompositeCategoriesPageResponseSwaggerDto,
   CompositeCategoryChildrenResponseSwaggerDto,
-  // CompositeBrandsPageResponseSwaggerDto,
+  CompositeBrandsPageResponseSwaggerDto,
   // CompositeAttributesPageResponseSwaggerDto,
   CompositeAttributesCreateDialogResponseSwaggerDto,
   CompositeRegisterAttributeResponseSwaggerDto,
@@ -97,37 +97,36 @@ export class CompositeController {
     const input = validateCategoryChildrenParams(params);
     return this.compositeService.getCategoryChildrenPage(input.id);
   }
-  //TODO composite brands page endpoint implementation is pending BrandsModule and related service methods implementation
-  // @swaggerResponseExamples.compositeBrands
-  // @SuccessResponse('Brands page data retrieved successfully')
-  // @Get('brands')
-  // @ApiOperation({ summary: 'Get composite brands page data' })
-  // @ApiQuery({
-  //   name: 'paginationType',
-  //   required: false,
-  //   enum: ['offset', 'cursor'],
-  // })
-  // @ApiQuery({ name: 'page', required: false, type: Number })
-  // @ApiQuery({ name: 'pageSize', required: false, type: Number })
-  // @ApiQuery({ name: 'after', required: false, type: String })
-  // @ApiQuery({ name: 'before', required: false, type: String })
-  // @ApiQuery({ name: 'query', required: false, type: String })
-  // @ApiQuery({ name: 'name', required: false, type: String })
-  // @ApiQuery({ name: 'metaTitle', required: false, type: String })
-  // @ApiQuery({ name: 'isActive', required: false, type: Boolean })
-  // @ApiQuery({ name: 'website', required: false, type: String })
-  // @ApiQuery({ name: 'slug', required: false, type: String })
-  // @ApiOkResponse({
-  //   description: 'Brands page data retrieved successfully.',
-  //   type: CompositeBrandsPageResponseSwaggerDto,
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'Invalid brands page query parameters.',
-  // })
-  // async getBrandsPage(@Query() query: unknown) {
-  //   const input = validateBrandsPageQuery(query);
-  //   return this.compositeService.getBrandsPage(input);
-  // }
+  @swaggerResponseExamples.compositeBrands
+  @SuccessResponse('Brands page data retrieved successfully')
+  @Get('brands')
+  @ApiOperation({ summary: 'Get composite brands page data' })
+  @ApiQuery({
+    name: 'paginationType',
+    required: false,
+    enum: ['offset', 'cursor'],
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'pageSize', required: false, type: Number })
+  @ApiQuery({ name: 'after', required: false, type: String })
+  @ApiQuery({ name: 'before', required: false, type: String })
+  @ApiQuery({ name: 'query', required: false, type: String })
+  @ApiQuery({ name: 'name', required: false, type: String })
+  @ApiQuery({ name: 'metaTitle', required: false, type: String })
+  @ApiQuery({ name: 'isActive', required: false, type: Boolean })
+  @ApiQuery({ name: 'website', required: false, type: String })
+  @ApiQuery({ name: 'slug', required: false, type: String })
+  @ApiOkResponse({
+    description: 'Brands page data retrieved successfully.',
+    type: CompositeBrandsPageResponseSwaggerDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid brands page query parameters.',
+  })
+  async getBrandsPage(@Query() query: unknown) {
+    const input = validateBrandsPageQuery(query);
+    return this.compositeService.getBrandsPage(input);
+  }
 
   //TODO composite warehouses page endpoint implementation is pending WarehousesModule and related service methods implementation
   // @SuccessResponse('Warehouses page data retrieved successfully')

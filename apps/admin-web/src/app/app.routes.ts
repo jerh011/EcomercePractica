@@ -16,6 +16,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('@catalogs/catalogs.routes').then((m) => m.catalogRoutes),
       },
+      
     ],
   },
 ];

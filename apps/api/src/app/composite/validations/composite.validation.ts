@@ -6,10 +6,11 @@ import {
 import { validateListCategoriesQuery } from '../../categories/validations/categories.validation';
 //TODO: Amas cambios
 // import { validateListWarehousesQuery } from '../../warehouses/validations/warehouses.validation';
-// import { validateListBrandsQuery } from '../../brands/validations/brands.validation';
+import { validateListBrandsQuery } from '../../brands/validations/brands.validation';
 
 export const validateCategoriesPageQuery = validateListCategoriesQuery;
-// export const validateBrandsPageQuery = validateListBrandsQuery;
+export const validateBrandsPageQuery = validateListBrandsQuery;
+
 // export const validateWarehousesPageQuery = validateListWarehousesQuery;
 
 export function validateCategoryChildrenParams(value: unknown): { id: string } {

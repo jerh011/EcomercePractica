@@ -1,5 +1,5 @@
-// import type { BrandDto } from '../brands/dto/output/brand.dto';
-// import type { ListBrandsDto } from '../brands/dto/output/list-brands-result.dto';
+import type { BrandDto } from '../brands/dto/output/brand.dto.js';
+import type { ListBrandsDto } from '../brands/dto/output/list-brands-result.dto.js';
 import type { CategoryDto } from '../categories/output/category.dto.js';
 import type { ListCategoriesResultDto } from '../categories/output/list-categories-result.dto.js';
 import type {
@@ -39,11 +39,11 @@ export interface CategoryChildrenPageDto {
   category: CategoryDto | null;
 }
 
-// export interface BrandsPageDto {
-//   table: Omit<ListBrandsDto, 'brands'> & {
-//     brands: (BrandDto | null)[];
-//   };
-// }
+export interface BrandsPageDto {
+  table: Omit<ListBrandsDto, 'brands'> & {
+    brands: (BrandDto | null)[];
+  };
+}
 
 export interface WarehousesPageFiltersDto {
   states: MexicoStateCatalogSummaryDto[];

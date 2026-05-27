@@ -13,4 +13,9 @@ export const catalogRoutes: Routes = [
     loadChildren: () =>
       import('@categories/categories.routes').then((m) => m.categoriesRoutes),
   },
+  {
+    path: 'brands',
+    loadChildren: () =>
+      import('@brands/brands.routes').then((m) => m.brandRoutes),
+  },
 ];
