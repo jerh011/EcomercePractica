@@ -17,11 +17,6 @@ export class ProductService {
     const url = `${environment.apiUrl}/products/${id}`;
     const response = this.http.get<GetProductByIdResponse<TProduct>>(url);
     // Opcional: si quieres ver la respuesta cuando llegue
-    response.subscribe({
-      next: (data) => console.log('✅ Respuesta exitosa:', data),
-      error: (err) => console.error('❌ Error en la petición:', err),
-      complete: () => console.log('🏁 Petición completada'),
-    });
 
     return response;
   }

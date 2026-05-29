@@ -182,7 +182,6 @@ export class EditProductPage implements OnInit {
   private loadCategories(): void {
     this.categoriesQueryService.getCategoriesCursor(this.categoriesCursorParams()).subscribe({
       next: (response) => {
-      console.log('categories',response.data.categories)
         this.categoriesOptions.update((prev) =>
           this.mergeOptions(
             prev,

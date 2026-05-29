@@ -5,7 +5,11 @@ import { Button } from '@shared/component/ui/button/button';
 import { PageLayout } from '@shared/component/page-layout/page-layout';
 import { CategoryForm } from '@categories/components/forms/category-form/category-form';
 import { CategoriesTable } from '@categories/components/categories-table/categories-table';
-import { createPagination, FormActionsOptions, FormEvent } from '@shared/interfaces';
+import {
+  createPagination,
+  FormActionsOptions,
+  FormEvent,
+} from '@shared/interfaces';
 import { CategoryDraft } from './types';
 import { CategoryFormData } from '@categories/components/forms/category-form/types';
 import { toDraftRecord } from '@shared/mappers/entity-record.mapper';
@@ -93,19 +97,82 @@ export class BulkCategoryRegistrationPage implements OnInit {
     );
   }
 
-  onSubmit(event: FormEvent<CategoryFormData>) {
-    const draft = toDraftRecord<CategoryFormData>(event.data!);
+  async onSubmit(event: FormEvent<CategoryFormData>) {
+    const data = event.data!;
+    let imageUrl = this.toCategoryImageUrl(data.imageUrl);
+
+    if (imageUrl && imageUrl.length > 100000) {
+      imageUrl = await this.compressImage(imageUrl, 800, 0.7);
+      data.imageUrl = imageUrl ? [imageUrl] : [];
+    }
+
+    const draft = toDraftRecord<CategoryFormData>(data);
     this.categories.update((categories) => [...categories, draft]);
   }
 
-  onSave() {
-    const categoriesToSave: BulkSaveCategoryItem[] = this.categories().map(
-      (c) => this.toCategoryItem(c),
-    );
+  private compressImage(
+    base64: string,
+    maxWidth = 800,
+    quality = 0.7,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = base64;
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedBase64);
+      };
+
+      img.onerror = () => {
+        reject(new Error('Failed to load image'));
+      };
+    });
+  }
+
+  async onSave() {
+    const categoriesToSave: BulkSaveCategoryItem[] = [];
+
+    for (const category of this.categories()) {
+      let imageUrl = this.toCategoryImageUrl(category.data.imageUrl);
+
+      if (imageUrl && imageUrl.length > 100000) {
+        imageUrl = await this.compressImage(imageUrl, 800, 0.7);
+      }
+
+      categoriesToSave.push({
+        key: category.data._recordKey,
+        description: category.data.description,
+        imageUrl: imageUrl,
+        isActive: category.data.isActive,
+        metaDescription: category.data.metaDescription,
+        metaTitle: category.data.metaTitle,
+        name: category.data.name,
+        visibleInMenu: category.data.visibleInMenu,
+      });
+    }
+
     this.categoryService
       .saveBatchCategories(categoriesToSave)
-      .subscribe((response) => {
-        const { succeeded, failed } = response as any;
+      .subscribe((response: any) => {
+        const succeeded = response.succeeded || response.data?.succeeded || [];
+        const failed = response.failed || response.data?.failed || [];
+
         const savedCount = succeeded.length;
         if (savedCount > 0) {
           this.toastService.showSuccess(

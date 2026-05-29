@@ -24,23 +24,24 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class EditCategoryPage {
   private readonly categoryService: CategoryService = inject(CategoryService);
-  private readonly categoryActionsService: CategoryActionsService = inject(CategoryActionsService);
+  private readonly categoryActionsService: CategoryActionsService = inject(
+    CategoryActionsService,
+  );
   private readonly toastService = inject(ToastService);
   private readonly location = inject(Location);
   private readonly dialogService = inject(DialogService);
   private readonly route = inject(ActivatedRoute);
-  
+
   private routeParams = toSignal(this.route.params);
   private id = computed(() => this.routeParams()?.['id'] as string | undefined);
   private category = signal<Category | null>(null);
-  
+
   isLoading = computed(() => this.category() === null);
-  
-  // IMPORTANTE: Esto nunca retorna null, retorna un objeto vacío mientras carga
+
   categoryFormData = computed((): CategoryFormData => {
     const currentCategory = this.category();
+
     if (!currentCategory) {
-      // Retorna un objeto vacío mientras carga
       return {
         name: '',
         description: '',
@@ -53,7 +54,7 @@ export class EditCategoryPage {
     }
     return this.toCategoryFormData(currentCategory);
   });
-  
+
   constructor() {
     effect(() => {
       const currentId = this.id();
@@ -62,49 +63,52 @@ export class EditCategoryPage {
       }
     });
   }
-  
+
   private loadCategory(categoryId: string) {
     this.categoryService.getCategoryById(categoryId).subscribe({
-      next: (category) => {
+      next: (response: any) => {
+        const category = response.data as Category;
         this.category.set(category);
       },
-      error: (error) => {
-        console.error('Error loading category:', error);
+      error: () => {
         this.toastService.showError('Error al cargar la categoría');
-      }
+      },
     });
   }
-  
+
   onSubmit(event: FormEvent<CategoryFormData>) {
     this.submitActionHandler(event);
   }
-  
+
   onCanceled(event: FormEvent<CategoryFormData>) {
     this.cancelActionHandler(event);
   }
-  
+
   private submitActionHandler(event: FormEvent<CategoryFormData>) {
     const currentId = this.id();
-    if (!currentId) return;
-    
+
+    if (!currentId) {
+      return;
+    }
+
     const payload = this.toUpdateCategoryPayload(event.changes!);
     this.categoryActionsService.updateCategory(currentId, payload).subscribe({
-      next: (category) => {
-        this.category.set(category);
+      next: (response: any) => {
+        const updatedCategory = response.data || response;
+        this.category.set(updatedCategory);
         this.toastService.showSuccess('Categoría actualizada exitosamente');
       },
-      error: (error) => {
-        console.error('Error updating category:', error);
+      error: () => {
         this.toastService.showError('Error al actualizar la categoría');
       },
     });
   }
-  
+
   private cancelActionHandler({ hasChanges }: FormEvent<CategoryFormData>) {
     if (!hasChanges) {
       return this.goBack();
     }
-    
+
     this.dialogService
       .openConfirm(
         {
@@ -123,23 +127,35 @@ export class EditCategoryPage {
         }
       });
   }
-  
+
   private goBack() {
     this.location.back();
   }
-  
-  private toUpdateCategoryPayload(formData: Partial<CategoryFormData>): UpdateCategory {
+
+  private toUpdateCategoryPayload(
+    formData: Partial<CategoryFormData>,
+  ): UpdateCategory {
     return {
       ...(formData.name !== undefined && { name: formData.name }),
-      ...(formData.description !== undefined && { description: formData.description }),
-      ...(formData.imageUrl !== undefined && { imageUrl: this.toCategoryImageUrl(formData.imageUrl) }),
+      ...(formData.description !== undefined && {
+        description: formData.description,
+      }),
+      ...(formData.imageUrl !== undefined && {
+        imageUrl: this.toCategoryImageUrl(formData.imageUrl),
+      }),
       ...(formData.isActive !== undefined && { isActive: formData.isActive }),
-      ...(formData.metaDescription !== undefined && { metaDescription: formData.metaDescription }),
-      ...(formData.metaTitle !== undefined && { metaTitle: formData.metaTitle }),
-      ...(formData.visibleInMenu !== undefined && { visibleInMenu: formData.visibleInMenu }),
+      ...(formData.metaDescription !== undefined && {
+        metaDescription: formData.metaDescription,
+      }),
+      ...(formData.metaTitle !== undefined && {
+        metaTitle: formData.metaTitle,
+      }),
+      ...(formData.visibleInMenu !== undefined && {
+        visibleInMenu: formData.visibleInMenu,
+      }),
     };
   }
-  
+
   private toCategoryFormData(category: Category): CategoryFormData {
     return {
       name: category.name,
@@ -151,11 +167,11 @@ export class EditCategoryPage {
       visibleInMenu: category.visibleInMenu,
     };
   }
-  
+
   private toCategoryImageUrl(value: string[]): string | undefined {
     return value[0] || undefined;
   }
-  
+
   private toCategoryImageUploadValue(value?: string | null): string[] {
     return value ? [value] : [];
   }

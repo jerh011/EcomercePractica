@@ -58,7 +58,8 @@ export class CategoryDetailsDialog implements IDialogComponent<string, void> {
 
   private loadCategoryDetails(id: string) {
     this.categoryService.getCategoryById(id).subscribe({
-      next: (category) => {
+      next: (response: any) => {
+        const category = response.data as Category;
         this.category.set(category);
       },
       error: () => {

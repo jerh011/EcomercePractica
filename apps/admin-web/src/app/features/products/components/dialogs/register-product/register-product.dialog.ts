@@ -238,7 +238,7 @@ export class RegisterProductDialog
     if (this.service.categoriesCursorParams().after) {
       this.service.searchCategories().subscribe({
         next: (response) => {
-          console.log(response);
+        
           this.categoriesOptions.update((prev) => [
             ...prev,
             ...response.data.categories.map(categoryToProductCategoryOption),

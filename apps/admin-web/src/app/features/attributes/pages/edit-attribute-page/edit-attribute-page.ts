@@ -97,7 +97,7 @@ export class EditAttributePage implements OnInit {
   fetchCategories(): void {
     this.attributeCategoriesService.fetchCategories().subscribe({
       next: (response) => {
-         console.log(response);
+       
         const { categories } = response;
         this.categories.update((current) => {
          

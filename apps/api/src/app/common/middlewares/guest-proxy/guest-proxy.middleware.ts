@@ -9,7 +9,7 @@ export class GuestProxyMiddleware implements NestMiddleware {
     if (customHeader === 'guest') {
       req.url = req.url.replace('/api', '/api/guest');
     }
-    console.log('GuestProxyMiddleware - Modified URL:', req.url);
+   
     next();
   }
 }
