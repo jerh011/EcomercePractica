@@ -62,29 +62,56 @@ export class RegisterProductVariantPage implements OnInit {
   readonly directAttributes = signal<AttributeProductVariantSummary[]>([]);
 
   ngOnInit(): void {
+    console.log('[RegisterProductVariantPage] ngOnInit ejecutado');
     this.loadProducts(true);
     this.registerProductVariantFormHandlers();
   }
 
   onSubmit(event: FormEvent<ProductVariantFormData>): void {
+    console.log('[RegisterProductVariantPage] onSubmit ejecutado');
+    console.log('[RegisterProductVariantPage] Event data:', event.data);
+    console.log(
+      '[RegisterProductVariantPage] Event hasChanges:',
+      event.hasChanges,
+    );
+
     if (!event.data?.product) {
+      console.warn('[RegisterProductVariantPage] No hay producto seleccionado');
       this.toastService.showError(
         'Selecciona un producto para guardar la variante.',
       );
       return;
     }
 
+    console.log(
+      '[RegisterProductVariantPage] Producto seleccionado:',
+      event.data.product,
+    );
+    console.log('[RegisterProductVariantPage] Precio:', event.data.price);
+    console.log(
+      '[RegisterProductVariantPage] ¿Tiene warning pricing?',
+      this.hasWarningPricing(event.data),
+    );
+
     if (this.hasWarningPricing(event.data)) {
+      console.log(
+        '[RegisterProductVariantPage] Mostrando confirmación de warning de precio',
+      );
       this.confirmWarningPricing(event.data);
       return;
     }
 
-    this.createProductVariant(
-      productVariantFormDataToCreateVariantRequest(event.data),
-    );
+    const payload = productVariantFormDataToCreateVariantRequest(event.data);
+    console.log('[RegisterProductVariantPage] Payload a enviar:', payload);
+    this.createProductVariant(payload);
   }
 
   private confirmWarningPricing(data: ProductVariantFormData): void {
+    console.log(
+      '[RegisterProductVariantPage] confirmWarningPricing, precio:',
+      data.price,
+    );
+
     const ref = this.dialogService.openConfirm(
       {
         message: `El precio base es menor o igual a $${WARNING_PRICING}. ¿Deseas continuar?`,
@@ -96,10 +123,17 @@ export class RegisterProductVariantPage implements OnInit {
     );
 
     ref.onAfterClose$.pipe(take(1)).subscribe((confirmed) => {
+      console.log(
+        '[RegisterProductVariantPage] Confirmación de warning, confirmed:',
+        confirmed,
+      );
       if (confirmed) {
-        this.createProductVariant(
-          productVariantFormDataToCreateVariantRequest(data),
+        const payload = productVariantFormDataToCreateVariantRequest(data);
+        console.log(
+          '[RegisterProductVariantPage] Enviando payload después de confirmación:',
+          payload,
         );
+        this.createProductVariant(payload);
       }
     });
   }
@@ -107,22 +141,68 @@ export class RegisterProductVariantPage implements OnInit {
   private createProductVariant(
     payload: ReturnType<typeof productVariantFormDataToCreateVariantRequest>,
   ): void {
+    console.log(
+      '[RegisterProductVariantPage] createProductVariant - Enviando petición',
+    );
+    console.log(
+      '[RegisterProductVariantPage] URL del endpoint:',
+      '/api/variants',
+    );
+    console.log(
+      '[RegisterProductVariantPage] Payload completo:',
+      JSON.stringify(payload, null, 2),
+    );
+
     this.productVariantActionsService.createProductVariant(payload).subscribe({
-      next: ({ data }) => this.onProductVariantCreated(data.variant.product.id),
-      error: (error) => this.onCreateProductVariantError(error),
+      next: ({ data }) => {
+        console.log('[RegisterProductVariantPage] Respuesta exitosa:', data);
+        console.log(
+          '[RegisterProductVariantPage] Product ID:',
+          data.variant.product.id,
+        );
+        this.onProductVariantCreated(data.variant.product.id);
+      },
+      error: (error) => {
+        console.error(
+          '[RegisterProductVariantPage] Error en la petición:',
+          error,
+        );
+        console.error('[RegisterProductVariantPage] Status:', error.status);
+        console.error(
+          '[RegisterProductVariantPage] StatusText:',
+          error.statusText,
+        );
+        console.error('[RegisterProductVariantPage] URL:', error.url);
+        console.error('[RegisterProductVariantPage] Error completo:', error);
+        this.onCreateProductVariantError(error);
+      },
     });
   }
 
   onCanceled(event: FormEvent<ProductVariantFormData>): void {
+    console.log('[RegisterProductVariantPage] onCanceled ejecutado');
+    console.log(
+      '[RegisterProductVariantPage] Event hasChanges:',
+      event.hasChanges,
+    );
+
     if (!event.hasChanges) {
+      console.log('[RegisterProductVariantPage] No hay cambios, regresando');
       this.goBack();
       return;
     }
 
+    console.log(
+      '[RegisterProductVariantPage] Hay cambios, confirmando cancelación',
+    );
     this.confirmCancelChanges();
   }
 
   private confirmCancelChanges(): void {
+    console.log(
+      '[RegisterProductVariantPage] confirmCancelChanges - Mostrando diálogo',
+    );
+
     this.dialogService
       .openConfirm(
         {
@@ -137,24 +217,50 @@ export class RegisterProductVariantPage implements OnInit {
       )
       .onAfterClose$.pipe(take(1))
       .subscribe((confirmed) => {
+        console.log(
+          '[RegisterProductVariantPage] Diálogo cerrado, confirmed:',
+          confirmed,
+        );
         if (confirmed) {
+          console.log(
+            '[RegisterProductVariantPage] Cancelación confirmada, regresando',
+          );
           this.goBack();
         }
       });
   }
 
   private loadProducts(reset = false): void {
+    console.log('[RegisterProductVariantPage] loadProducts, reset:', reset);
+    console.log(
+      '[RegisterProductVariantPage] Parámetros de cursor:',
+      this.productsCursorParams(),
+    );
+
     this.fetchProducts()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ data }) => {
+          console.log(
+            '[RegisterProductVariantPage] Productos cargados:',
+            data.products?.length || 0,
+          );
           this.applyProducts(data.products, reset);
           this.updateProductsCursor(data.nextCursor);
+        },
+        error: (error) => {
+          console.error(
+            '[RegisterProductVariantPage] Error loading products:',
+            error,
+          );
         },
       });
   }
 
   private registerProductVariantFormHandlers(): void {
+    console.log(
+      '[RegisterProductVariantPage] registerProductVariantFormHandlers',
+    );
     this.registerLoadMoreProductsHandler();
     this.registerSearchProductsHandler();
     this.registerSelectedProductChangeHandler();
@@ -164,7 +270,12 @@ export class RegisterProductVariantPage implements OnInit {
     this.productVariantFormService.loadMoreProducts$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => this.handleLoadMoreProducts(),
+        next: () => {
+          console.log(
+            '[RegisterProductVariantPage] loadMoreProducts$ triggered',
+          );
+          this.handleLoadMoreProducts();
+        },
       });
   }
 
@@ -172,18 +283,42 @@ export class RegisterProductVariantPage implements OnInit {
     this.productVariantFormService.searchProducts$
       .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (query) => this.handleSearchProducts(query),
+        next: (query) => {
+          console.log(
+            '[RegisterProductVariantPage] searchProducts$ triggered, query:',
+            query,
+          );
+          this.handleSearchProducts(query);
+        },
       });
   }
 
   private registerSelectedProductChangeHandler(): void {
     this.productVariantFormService.selectedProductChange$
       .pipe(
-        switchMap((product) => this.fetchSelectedProduct(product)),
+        switchMap((product) => {
+          console.log(
+            '[RegisterProductVariantPage] selectedProductChange$, product:',
+            product,
+          );
+          return this.fetchSelectedProduct(product);
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (product) => this.applySelectedProduct(product),
+        next: (product) => {
+          console.log(
+            '[RegisterProductVariantPage] Producto seleccionado aplicado:',
+            product,
+          );
+          this.applySelectedProduct(product);
+        },
+        error: (error) => {
+          console.error(
+            '[RegisterProductVariantPage] Error fetching selected product:',
+            error,
+          );
+        },
       });
   }
 
@@ -197,13 +332,27 @@ export class RegisterProductVariantPage implements OnInit {
     products: ProductProductVariantSummary[],
     reset: boolean,
   ): void {
+    console.log(
+      '[RegisterProductVariantPage] applyProducts, cantidad:',
+      products?.length,
+      'reset:',
+      reset,
+    );
     const options = this.toProductVariantProductOptions(products);
     this.productsOptions.update((prev) =>
       reset ? options : this.mergeProductOptions(prev, options),
     );
+    console.log(
+      '[RegisterProductVariantPage] productsOptions actualizado:',
+      this.productsOptions().length,
+    );
   }
 
   private updateProductsCursor(nextCursor: string | null): void {
+    console.log(
+      '[RegisterProductVariantPage] updateProductsCursor, nextCursor:',
+      nextCursor,
+    );
     this.productsCursorParams.update((params) => ({
       ...params,
       after: nextCursor,
@@ -211,31 +360,60 @@ export class RegisterProductVariantPage implements OnInit {
   }
 
   private handleLoadMoreProducts(): void {
+    console.log('[RegisterProductVariantPage] handleLoadMoreProducts');
     if (!this.hasMoreProducts()) {
+      console.log(
+        '[RegisterProductVariantPage] No hay más productos para cargar',
+      );
       return;
     }
-
     this.loadProducts();
   }
 
   private handleSearchProducts(query: string): void {
+    console.log(
+      '[RegisterProductVariantPage] handleSearchProducts, query:',
+      query,
+    );
     this.resetProductsSearch(query);
     this.loadProducts(true);
   }
 
   private hasMoreProducts(): boolean {
-    return Boolean(this.productsCursorParams().after);
+    const hasMore = Boolean(this.productsCursorParams().after);
+    console.log('[RegisterProductVariantPage] hasMoreProducts:', hasMore);
+    return hasMore;
   }
 
   private hasWarningPricing(data: ProductVariantFormData): boolean {
-    return this.isWarningPricing(data.price);
+    const hasWarning = this.isWarningPricing(data.price);
+    console.log(
+      '[RegisterProductVariantPage] hasWarningPricing:',
+      hasWarning,
+      'price:',
+      data.price,
+    );
+    return hasWarning;
   }
 
   private isWarningPricing(value: number | null): boolean {
-    return typeof value === 'number' && value <= WARNING_PRICING;
+    const isWarning = typeof value === 'number' && value <= WARNING_PRICING;
+    console.log(
+      '[RegisterProductVariantPage] isWarningPricing:',
+      isWarning,
+      'value:',
+      value,
+      'WARNING_PRICING:',
+      WARNING_PRICING,
+    );
+    return isWarning;
   }
 
   private resetProductsSearch(query: string): void {
+    console.log(
+      '[RegisterProductVariantPage] resetProductsSearch, query:',
+      query,
+    );
     this.productsCursorParams.update((params) => ({
       ...params,
       query: query.trim(),
@@ -247,28 +425,65 @@ export class RegisterProductVariantPage implements OnInit {
   private fetchSelectedProduct(
     product: ProductSummary | null,
   ): Observable<ProductProductVariantSummary | null> {
+    console.log(
+      '[RegisterProductVariantPage] fetchSelectedProduct, product:',
+      product,
+    );
+
     if (!product) {
+      console.log(
+        '[RegisterProductVariantPage] No hay producto, retornando null',
+      );
       return of(null);
     }
 
+    console.log(
+      '[RegisterProductVariantPage] Obteniendo producto por ID:',
+      product.id,
+    );
     return this.productService
       .getProductById<ProductProductVariantSummary>(product.id)
-      .pipe(map(({ data }) => data.product));
+      .pipe(
+        map(({ data }) => {
+          console.log(
+            '[RegisterProductVariantPage] Producto obtenido:',
+            data.product,
+          );
+          return data.product;
+        }),
+      );
   }
 
   private applySelectedProduct(
     selectedProduct: ProductProductVariantSummary | null,
   ): void {
+    console.log(
+      '[RegisterProductVariantPage] applySelectedProduct:',
+      selectedProduct,
+    );
+
     if (!selectedProduct) {
+      console.log(
+        '[RegisterProductVariantPage] No hay producto seleccionado, limpiando atributos',
+      );
       this.clearSelectedProductAttributes();
       return;
     }
+
+    console.log(
+      '[RegisterProductVariantPage] Aplicando atributos del producto:',
+      {
+        attributes: selectedProduct.attributes?.length,
+        directAttributes: selectedProduct.directAttributes?.length,
+      },
+    );
 
     this.applySelectedProductAttributes(selectedProduct.attributes);
     this.applySelectedProductDirectAttributes(selectedProduct.directAttributes);
   }
 
   private clearSelectedProductAttributes(): void {
+    console.log('[RegisterProductVariantPage] clearSelectedProductAttributes');
     this.attributesOptions.set([]);
     this.directAttributes.set([]);
   }
@@ -276,6 +491,10 @@ export class RegisterProductVariantPage implements OnInit {
   private applySelectedProductAttributes(
     attributes: AttributeProductVariantSummary[],
   ): void {
+    console.log(
+      '[RegisterProductVariantPage] applySelectedProductAttributes, cantidad:',
+      attributes?.length,
+    );
     this.attributesOptions.set(
       this.toProductVariantAttributeOptions(attributes),
     );
@@ -284,6 +503,10 @@ export class RegisterProductVariantPage implements OnInit {
   private applySelectedProductDirectAttributes(
     attributes: AttributeProductVariantSummary[],
   ): void {
+    console.log(
+      '[RegisterProductVariantPage] applySelectedProductDirectAttributes, cantidad:',
+      attributes?.length,
+    );
     this.directAttributes.set(attributes);
   }
 
@@ -337,31 +560,55 @@ export class RegisterProductVariantPage implements OnInit {
   ): ProductVariantProductOption[] {
     const existing = new Set(previous.map((option) => option.value.id));
     const missing = next.filter((option) => !existing.has(option.value.id));
+    console.log('[RegisterProductVariantPage] mergeProductOptions:', {
+      previous: previous.length,
+      next: next.length,
+      missing: missing.length,
+    });
     return [...previous, ...missing];
   }
 
   private onProductVariantCreated(productId: string): void {
+    console.log(
+      '[RegisterProductVariantPage] onProductVariantCreated, productId:',
+      productId,
+    );
     this.toastService.showSuccess('Variante creada correctamente.');
     this.navigateToProductVariants(productId);
   }
 
   private onCreateProductVariantError(error: unknown): void {
-    this.toastService.showError(
-      this.getErrorMessage(error) ?? 'Error al crear la variante.',
+    console.error(
+      '[RegisterProductVariantPage] onCreateProductVariantError:',
+      error,
     );
+    const errorMessage =
+      this.getErrorMessage(error) ?? 'Error al crear la variante.';
+    console.error(
+      '[RegisterProductVariantPage] Mensaje de error:',
+      errorMessage,
+    );
+    this.toastService.showError(errorMessage);
   }
 
   private navigateToProductVariants(productId?: string): void {
+    console.log(
+      '[RegisterProductVariantPage] navigateToProductVariants, productId:',
+      productId,
+    );
     this.router.navigate(['catalogs', 'product-variants'], {
       ...(productId ? { queryParams: { productId } } : {}),
     });
   }
 
   private goBack(): void {
+    console.log('[RegisterProductVariantPage] goBack ejecutado');
     this.location.back();
   }
 
   private getErrorMessage(error: unknown): string | null {
+    console.log('[RegisterProductVariantPage] getErrorMessage, error:', error);
+
     if (
       error &&
       typeof error === 'object' &&
@@ -371,9 +618,14 @@ export class RegisterProductVariantPage implements OnInit {
       'message' in error.error &&
       typeof error.error.message === 'string'
     ) {
+      console.log(
+        '[RegisterProductVariantPage] Mensaje encontrado en error.error.message:',
+        error.error.message,
+      );
       return error.error.message;
     }
 
+    console.log('[RegisterProductVariantPage] No se encontró mensaje de error');
     return null;
   }
 }

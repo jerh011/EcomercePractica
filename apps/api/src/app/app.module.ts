@@ -6,6 +6,7 @@ import { CompositeModule } from './composite/composite.module';
 import { BrandsModule } from './brands/brands.module';
 import { AttributesModule } from './attributes/attributes.module';
 import { ProductsModule } from './products/products.module';
+import { VariantsModule } from './variants/variants.module';
 @Module({
   imports: [
     CategoriesModule,
@@ -13,6 +14,7 @@ import { ProductsModule } from './products/products.module';
     BrandsModule,
     AttributesModule,
     ProductsModule,
+    VariantsModule
   ],
   controllers: [AppController],
   providers: [AppService],
