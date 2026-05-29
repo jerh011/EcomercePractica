@@ -8,7 +8,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiTags,
-  ApiUnauthorizedResponse,
+
 } from '@nestjs/swagger';
 import { LegacyHttpExceptionFilter } from '../../common/http/legacy-http-exception.filter';
 import { CompositeService } from './composite.service';
@@ -36,9 +36,7 @@ import { SuccessResponse } from '../common/interceptors/success-response.decorat
 
 @ApiTags('Composite')
 @ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  description: 'Bearer access token required or invalid.',
-})
+
 @ApiExtraModels(
   CompositeCategoriesPageResponseSwaggerDto,
   CompositeCategoryChildrenResponseSwaggerDto,

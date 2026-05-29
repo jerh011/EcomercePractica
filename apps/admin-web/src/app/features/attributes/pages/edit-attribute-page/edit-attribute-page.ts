@@ -49,13 +49,11 @@ export class EditAttributePage implements OnInit {
   });
 
   ngOnInit(): void {
-    console.log('[EditAttributePage] ngOnInit - id:', this.id());
     if (!this.validateId()) return;
     this.loadAttribute(this.id()!);
   }
 
   private validateId(): boolean {
-    console.log('[validateId] id value:', this.id());
     if (!this.id()) {
       console.error(
         '[validateId] Attribute ID is required to edit an attribute.',
@@ -66,15 +64,11 @@ export class EditAttributePage implements OnInit {
   }
 
   private loadAttribute(id: string): void {
-    console.log('[loadAttribute] loading attribute with id:', id);
     this.editAttributePageService.getAttribute(id).subscribe({
       next: (response) => {
-        console.log('[loadAttribute] response:', response);
         const etag = response.headers.get('etag');
-        console.log('[loadAttribute] etag:', etag);
         const version = etag ? Number(etag.replace(/"/g, '')) : null;
         this.attributeVersion.set(version);
-        console.log('[loadAttribute] version set:', version);
         if (response.body) {
           this.onAttributeLoaded(response.body);
         }
@@ -87,16 +81,10 @@ export class EditAttributePage implements OnInit {
     success: boolean;
     data: Attribute;
   }): void {
-    console.log(
-      '[onAttributeLoaded] success:',
-      response.success,
-      'data:',
-      response.data,
-    );
+
     if (response.success) {
       this.categories.set(response.data.categories);
       this.attribute.set(response.data);
-      console.log('[onAttributeLoaded] attribute set:', this.attribute());
     }
   }
 
@@ -109,8 +97,10 @@ export class EditAttributePage implements OnInit {
   fetchCategories(): void {
     this.attributeCategoriesService.fetchCategories().subscribe({
       next: (response) => {
+         console.log(response);
         const { categories } = response;
         this.categories.update((current) => {
+         
           const newCategories = categories.filter(
             (newCategory) => !current.some((cat) => cat.id === newCategory.id),
           );
@@ -166,13 +156,9 @@ export class EditAttributePage implements OnInit {
       updatedRequest,
     );
 
-    console.log('[onSubmit] currentRequest:', currentRequest);
-    console.log('[onSubmit] updatedRequest:', updatedRequest);
-    console.log('[onSubmit] diff:', diff);
-    console.log('[onSubmit] version:', version);
+
 
     if (Object.keys(diff).length === 0) {
-      console.log('[onSubmit] no changes detected, skipping update');
       return;
     }
 
@@ -183,7 +169,6 @@ export class EditAttributePage implements OnInit {
           const etag = response.headers.get('etag');
           const newVersion = etag ? Number(etag.replace(/"/g, '')) : null;
           this.attributeVersion.set(newVersion);
-          console.log('[onSubmit] updated version:', newVersion);
           if (response.body) {
             this.onAttributeUpdated(response.body);
           }

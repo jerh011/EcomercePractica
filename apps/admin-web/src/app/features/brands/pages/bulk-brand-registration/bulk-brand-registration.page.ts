@@ -64,7 +64,6 @@ export class BulkBrandRegistrationPage {
         );
         this.brandService.saveBrands(bulkSaveItems).subscribe({
             next: (response) => {
-                console.log('Marcas guardadas exitosamente:', response);
                 this.brandDrafts.set([]);
             },
             error: (error) => {

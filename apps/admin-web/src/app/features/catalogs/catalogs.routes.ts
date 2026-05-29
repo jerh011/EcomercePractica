@@ -23,9 +23,9 @@ export const catalogRoutes: Routes = [
     loadChildren: () =>
       import('@attributes/attributes.routes').then((m) => m.attributeRoutes),
   },
-  // {
-  //   path: 'products',
-  //   loadChildren: () =>
-  //     import('@products/products.routes').then((m) => m.productRoutes),
-  // },
+  {
+    path: 'products',
+    loadChildren: () =>
+      import('@products/products.routes').then((m) => m.productRoutes),
+  },
 ];

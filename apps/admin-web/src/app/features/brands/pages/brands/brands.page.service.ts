@@ -23,29 +23,21 @@ export class BrandsPageService {
 
   private readonly http: HttpClient = inject(HttpClient);
 
-  // ✅ CORREGIDO: Usar la ruta correcta /composite/brands
   getCompositeBrandsPage(): Observable<BrandsOffsetResponse> {
-    return this.http.get<BrandsOffsetResponse>(
-      `${environment.apiUrl}/composite/brands`,
-      {
-        params: {
-          page: this.paginationParams().page.toString(),
-          pageSize: this.paginationParams().pageSize.toString(),
-        },
+    return this.http.get<BrandsOffsetResponse>(`${environment.apiUrl}/brands`, {
+      params: {
+        page: this.paginationParams().page.toString(),
+        pageSize: this.paginationParams().pageSize.toString(),
       },
-    );
+    });
   }
 
-  // ✅ CORREGIDO: También aquí
   fetchBrands(): Observable<BrandsOffsetResponse> {
-    return this.http.get<BrandsOffsetResponse>(
-      `${environment.apiUrl}/composite/brands`,
-      {
-        params: {
-          page: this.paginationParams().page.toString(),
-          pageSize: this.paginationParams().pageSize.toString(),
-        },
+    return this.http.get<BrandsOffsetResponse>(`${environment.apiUrl}/brands`, {
+      params: {
+        page: this.paginationParams().page.toString(),
+        pageSize: this.paginationParams().pageSize.toString(),
       },
-    );
+    });
   }
 }

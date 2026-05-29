@@ -16,9 +16,9 @@ import { DialogService } from '@shared/services/toast/dialog/dialog.service';
 import { RegisterAttributeDialog } from '@attributes/components/dialogs/register-attribute-dialog/register-attribute-dialog';
 import { DIMENSIONS } from '@shared/constants/dimensions.consts';
 import { Router } from '@angular/router';
+import { AttributesCompositeResponse } from '@attributes/interfaces/attributes-page.interface';
 import { AttributeRecord } from '@attributes/interfaces/attribute-record.interface';
 import { AttributeDetailsDialog } from '@attributes/components/dialogs/attribute-details-dialog/attribute-details-dialog';
-
 @Component({
   selector: 'ecom-attributes-page',
   imports: [
@@ -91,17 +91,19 @@ export class AttributesPage implements OnInit {
   }
 
   private loadInitialData(): void {
-    this.pageService.fetchAttributes().subscribe({
-      next: ({ data }) => {
-        console.log('[loadInitialData] response data:', data);
-        this.attributes.set(data.attributes);
-        this.totalCount.set(data.totalCount ?? 0);
-        this.totalPages.set(data.totalPages ?? 0);
-        console.log('[loadInitialData] attributes set:', this.attributes());
-      },
-      error: (err) => console.error('[loadInitialData] error:', err),
+    this.pageService.attributesPageComposite().subscribe({
+      next: ({ data }) => this.applyCompositeData(data),
+      error: (err) =>
+        console.error('Error loading attributes composite data', err),
     });
   }
+
+  private applyCompositeData(data: AttributesCompositeResponse): void {
+    this.attributes.set(data.table.attributes);
+    this.totalCount.set(data.table.totalCount);
+    this.totalPages.set(data.table.totalPages);
+  }
+
   onPageChange(newPage: number): void {
     this.pageService.attributesSearchParams.update((params) => ({
       ...params,

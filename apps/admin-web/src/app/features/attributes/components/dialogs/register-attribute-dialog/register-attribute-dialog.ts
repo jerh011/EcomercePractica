@@ -60,8 +60,6 @@ export class RegisterAttributeDialog
   private loadInitialData(): void {
     this.attributeCategoriesService.fetchCategories().subscribe({
       next: (response) => {
-        console.log('[loadInitialData] full response:', response);
-        console.log('[loadInitialData] response.data:', response.categories);
         this.categories.set(response.categories ?? []);
       },
       error: (err) => console.error('[loadInitialData] error:', err),

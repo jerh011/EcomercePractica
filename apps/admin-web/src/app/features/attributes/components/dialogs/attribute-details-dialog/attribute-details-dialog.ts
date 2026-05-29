@@ -34,7 +34,7 @@ export class AttributeDetailsDialog implements IDialogComponent<string | undefin
     }
     this.attributeDetailsDialogService.getAttribute(this.data()!).subscribe({
         next: (response) => {
-          console.log('Detalles del atributo:', response.data);
+          console.log('no c',response);
           this.attribute.set(response.data);
         },
         error: (error) => {

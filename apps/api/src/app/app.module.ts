@@ -4,9 +4,16 @@ import { AppService } from './app.service';
 import { CategoriesModule } from './categories/categories.module';
 import { CompositeModule } from './composite/composite.module';
 import { BrandsModule } from './brands/brands.module';
-import {AttributesModule} from './attributes/attributes.module'
+import { AttributesModule } from './attributes/attributes.module';
+import { ProductsModule } from './products/products.module';
 @Module({
-  imports: [CategoriesModule, CompositeModule, BrandsModule, AttributesModule],
+  imports: [
+    CategoriesModule,
+    CompositeModule,
+    BrandsModule,
+    AttributesModule,
+    ProductsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

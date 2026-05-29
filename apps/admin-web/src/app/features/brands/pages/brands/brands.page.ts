@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { BrandOverviewActions } from '@brands/components/brand-overview-actions/brand-overview-actions';
 import { PageHeader } from '@shared/component/page-header/page-header';
 import { PageLayout } from '@shared/component/page-layout/page-layout';
-import { BrandOverviewActions } from '@brands/components/brand-overview-actions/brand-overview-actions';
 import { BrandsTable } from '@brands/components/brands-table/brands-table';
 import { BrandsPageService } from './brands.page.service';
 import { Brand } from '@shared/models';
@@ -18,7 +18,6 @@ import { createPagination } from '@shared/interfaces';
 import { BrandRecord } from '@brands/components/brands-table/types';
 import { filter, Observable } from 'rxjs';
 import { BrandDetailsDialog } from '@brands/dialogs/brand-details/brand-details.dialog';
-import { BrandsOffsetResponse } from './types';
 
 @Component({
   selector: 'ecom-brands-page',
@@ -62,30 +61,15 @@ export class BrandsPage implements OnInit {
   private loadCompositePage(): void {
     this.service.getCompositeBrandsPage().subscribe({
       next: (response) => this.handleCompositePageResponse(response),
-      error: (error) => {
-        console.error('Error loading brands:', error);
-        this.toast.showError('Error al cargar las marcas');
-      },
     });
   }
 
-  private handleCompositePageResponse(response: unknown): void {
-    console.log('respuesta completa', response);
-
-    // La respuesta real tiene estructura { table: { brands, totalCount, totalPages } }
-    const responseObj = response as {
-      table: { brands: Brand[]; totalCount: number; totalPages: number };
-    };
-
-    if (responseObj?.table) {
-      const table = responseObj.table;
-      this.brands.set(table.brands || []);
-      this.totalBrands.set(table.totalCount || 0);
-      this.totalPages.set(table.totalPages || 0);
-    } else {
-      console.warn('Estructura de respuesta inesperada:', response);
+  private handleCompositePageResponse(response: any): void {
+    if (response.success) {
+      this.brands.set(response.data.brands);
+      this.totalBrands.set(response.data.totalCount);
+      this.totalPages.set(response.data.totalPages);
     }
-
     this.registerTableEventHandlers();
   }
 
@@ -331,20 +315,12 @@ export class BrandsPage implements OnInit {
 
   private fetchBrands(): void {
     this.service.fetchBrands().subscribe({
-      next: (response: unknown) => {
-        const responseObj = response as {
-          table: { brands: Brand[]; totalCount: number; totalPages: number };
-        };
-        const table = responseObj?.table;
-        if (table) {
-          this.brands.set(table.brands || []);
-          this.totalBrands.set(table.totalCount || 0);
-          this.totalPages.set(table.totalPages || 0);
+      next: (response) => {
+        if (response.success) {
+          this.brands.set(response.data.brands);
+          this.totalBrands.set(response.data.totalCount);
+          this.totalPages.set(response.data.totalPages);
         }
-      },
-      error: (error) => {
-        console.error('Error fetching brands:', error);
-        this.toast.showError('Error al actualizar las marcas');
       },
     });
   }

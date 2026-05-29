@@ -151,7 +151,6 @@ export class AttributeForm {
       this.searchCategories.emit(query);
     });
     this.categoryScroll$.pipe(debounceTime(500)).subscribe(() => {
-      console.log('Scrolled to end, emitting scrollCategoriesToEnd event');
       this.scrollCategoriesToEnd.emit();
     });
   }

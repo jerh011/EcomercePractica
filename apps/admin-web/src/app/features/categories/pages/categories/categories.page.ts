@@ -6,16 +6,15 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { Subject, startWith, switchMap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoriesService } from './categories.service';
 import {
   createPagination,
   EntityData,
+  EntityRecord,
   PersistedRecord,
 } from '@shared/interfaces';
-import { PageHeader } from '@shared/component/page-header/page-header';
 import { PageLayout } from '@shared/component/page-layout/page-layout';
+import { PageHeader } from '@shared/component/page-header/page-header';
 import { CategoryOverviewActions } from '@categories/components/category-overview-actions/category-overview-actions';
 import { RegisterCategoryStrategy } from '@categories/components/category-overview-actions/types';
 import { CategoriesTable } from '@categories/components/categories-table/categories-table';
@@ -54,8 +53,6 @@ export class CategoriesPage implements OnInit {
   private readonly dialogService: DialogService = inject(DialogService);
   private readonly router: Router = inject(Router);
 
-  private readonly reload$ = new Subject<void>();
-
   isLoadingComposite = signal(true);
   totalCategories = signal<number>(0);
   private readonly totalPages = signal<number>(0);
@@ -77,37 +74,17 @@ export class CategoriesPage implements OnInit {
     this.categories().map(toPersistedRecord),
   );
 
-  constructor() {
-    this.reload$
-      .pipe(
-        startWith(undefined),
-        switchMap(() => this.service.fetchCategoriesPage()),
-        takeUntilDestroyed(),
-      )
-      .subscribe({
-        next: (response) => {
-          this.categories.set(response.categories);
-          this.totalCategories.set(response.totalCount);
-          this.totalPages.set(response.totalPages);
-        },
-      });
-  }
-
   ngOnInit(): void {
     this.loadPageComposite();
-  }
-
-  private triggerReload(): void {
-    this.reload$.next();
   }
 
   private loadPageComposite(): void {
     this.isLoadingComposite.set(true);
     this.service.getCompositeCategoriesPage().subscribe({
       next: (response) => {
-        this.totalCategories.set(response.table.totalCount);
-        this.totalPages.set(response.table.totalPages);
-        this.categories.set(response.table.categories);
+        this.totalCategories.set(response.data.table.totalCount);
+        this.totalPages.set(response.data.table.totalPages);
+        this.categories.set(response.data.table.categories);
         this.registerTableEventHandlers();
         this.isLoadingComposite.set(false);
       },
@@ -132,7 +109,6 @@ export class CategoriesPage implements OnInit {
       this.toggleVisibilityHandler(event),
     );
   }
-
   private toggleVisibilityHandler(event: CategoryVisibleInMenuChange): void {
     const { snapshot, newValue } = event;
     const category = this.findCategoryById(snapshot.data._recordKey);
@@ -142,10 +118,25 @@ export class CategoriesPage implements OnInit {
         visibleInMenu: newValue,
       })
       .subscribe({
-        next: () => this.onVisibilityChangeSuccess(category),
+        next: () => this.onVisibilityChangeSuccess(category), // ✅
         error: () => this.onVisibilityChangeError(category, newValue),
       });
   }
+
+  private toggleCategoryStatusHandler(event: CategoryStatusChange): void {
+    const { snapshot, newValue } = event;
+    const category = this.findCategoryById(snapshot.data._recordKey);
+    this.categoryActionsService
+      .toggleCategoryActiveStatus({
+        id: snapshot.data._recordKey,
+        isActive: newValue,
+      })
+      .subscribe({
+        next: () => this.onStatusChangeSuccess(category), // ✅
+        error: () => this.onStatusChangeError(category, newValue),
+      });
+  }
+
 
   private onVisibilityChangeSuccess(category: Category | undefined): void {
     this.toastService.showSuccess(
@@ -169,19 +160,6 @@ export class CategoriesPage implements OnInit {
     );
   }
 
-  private toggleCategoryStatusHandler(event: CategoryStatusChange): void {
-    const { snapshot, newValue } = event;
-    const category = this.findCategoryById(snapshot.data._recordKey);
-    this.categoryActionsService
-      .toggleCategoryActiveStatus({
-        id: snapshot.data._recordKey,
-        isActive: newValue,
-      })
-      .subscribe({
-        next: () => this.onStatusChangeSuccess(category),
-        error: () => this.onStatusChangeError(category, newValue),
-      });
-  }
 
   private onStatusChangeSuccess(category: Category | undefined): void {
     this.toastService.showSuccess(
@@ -234,7 +212,7 @@ export class CategoriesPage implements OnInit {
         if (confirmed) {
           this.categoryActionsService.deleteCategory(categoryId).subscribe({
             next: () => {
-              this.triggerReload();
+              this.fetchCategories();
               this.toastService.showSuccess(
                 'Categoría eliminada correctamente.',
               );
@@ -270,7 +248,7 @@ export class CategoriesPage implements OnInit {
       ...params,
       page: newPage,
     }));
-    this.triggerReload();
+    this.fetchCategories();
   }
 
   onCategoryCreationRequest(strategy: RegisterCategoryStrategy): void {
@@ -291,7 +269,7 @@ export class CategoriesPage implements OnInit {
       })
       .onClose$.subscribe((result) => {
         if (result) {
-          this.triggerReload();
+          this.fetchCategories();
           this.toastService.showSuccess('Categoría creada correctamente.');
         }
       });
@@ -299,6 +277,16 @@ export class CategoriesPage implements OnInit {
 
   private registerBulkCategory(): void {
     this.router.navigate(['catalogs/categories/bulk-registration']);
+  }
+
+  private fetchCategories(): void {
+    this.service.fetchCategoriesPage().subscribe({
+      next: (response) => {
+        this.categories.set(response.data.categories);
+        this.totalCategories.set(response.data.totalCount);
+        this.totalPages.set(response.data.totalPages);
+      },
+    });
   }
 
   private revertCategoryStatus(id: string, failedValue: boolean): void {

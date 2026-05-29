@@ -1,16 +1,17 @@
-
-
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { Logger} from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core'; // ✅
 import { AppModule } from './app/app.module';
+import { SuccessResponseInterceptor } from './app/common/interceptors/success-response.interceptor'; // ajusta el path
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-    app.enableCors({
-      origin: 'http://localhost:4200',
-      credentials: true,
-      exposedHeaders: ['ETag'],
-    });
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+    exposedHeaders: ['ETag'],
+  });
+
+  app.useGlobalInterceptors(new SuccessResponseInterceptor(new Reflector())); // ✅
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
